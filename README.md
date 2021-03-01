@@ -1,16 +1,8 @@
 # agenda_lezioni
 
-Agenda applcation for lesson and for take notes
+This application is in development, and has not yet arrived at a first version, so it has no realise available
+An agenda application for not forget lesson and for take notes 
 
-## Getting Started
+# App
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This app is developed with flutter
