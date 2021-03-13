@@ -1,8 +1,8 @@
 library agenda;
 import 'package:agenda_lezioni/utils/class/note.dart';
-import 'IMappable.dart';
 
-class Subject implements IMappable
+
+class Subject
 {
   String _name;
   String _note;
@@ -39,18 +39,31 @@ class Subject implements IMappable
     note = no;
   }
 
-  Subject.FromMap(Map<String, dynamic> map)
+  Subject.fromJson(Map<String, dynamic> map)
   {
     name = map['name'];
     note = map['note'];
   }
 
-  @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return{
       "name" : name,
       "note" : note
     };
+  }
+
+  @override
+  bool operator ==(other) => equals(this, other);
+
+  bool equals(Subject first, second)
+  {
+    if(second is Subject)
+    {
+      if(first.name == second.name)
+        return true;
+      return false;
+    }
+    return false;
   }
 
 

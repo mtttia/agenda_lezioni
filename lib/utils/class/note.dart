@@ -1,10 +1,9 @@
 library agenda;
 import 'package:flutter/rendering.dart';
 
-import 'IMappable.dart';
-import 'materia.dart';
+import 'subject.dart';
 
-abstract class Note implements IMappable
+abstract class Note
 {
   String _name;
   String get name{
@@ -46,13 +45,19 @@ abstract class Note implements IMappable
     }
   }
 
+  Note.fromJson(Map<String, dynamic> json)
+  {
+    name = json['nome'];
+    text = json['text'];
+    subject = json['text'];
+  }
+
   @override
   String toString() {
     return super.toString();
   }
 
-  @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return{
       "name" : name,
       "text" : text,
@@ -66,10 +71,11 @@ abstract class Note implements IMappable
 class FixedNote extends Note
 {
   FixedNote(String n, String t, Subject s) : super(n, t, s){}
+  FixedNote.fromJson(Map<String, dynamic> json) : super.fromJson(json){}
   static const String type = "Fixed";
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return{
       "type" : type,
       "name" : name,
@@ -88,6 +94,11 @@ class VolatileNote extends Note
   {
     deadline = d;
   }
+  VolatileNote.fromJson(Map<String, dynamic> json) : super.fromJson(json)
+  {
+    deadline = getDatetime(json['deadline']);
+  }
+
 
   bool valid()
   {
@@ -100,7 +111,7 @@ class VolatileNote extends Note
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return{
       "type" : type,
       "name" : name,
@@ -121,8 +132,13 @@ class DayNote extends Note
     weekDay = d;
   }
 
+  DayNote.fromJson(Map<String, dynamic> json) : super.fromJson(json)
+  {
+    weekDay = json['weekDay'];
+  }
+
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return{
       "type" : type,
       "name" : name,
@@ -143,8 +159,14 @@ class VolatilDayNote extends VolatileNote
     weekDay = day;
   }
 
+  VolatilDayNote.fromJson(Map<String, dynamic> json) : super.fromJson(json)
+  {
+    weekDay = json['weekDay'];
+  }
+
+
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return{
       "type" : type,
       "name" : name,
@@ -166,8 +188,22 @@ class Event extends Note
     day = d;
   }
 
-  @override
-  Map<String, dynamic> toMap() {
+  Event.fromJson(Map<String, dynamic> json) : super.fromJson(json)
+  {
+    day = getDatetime(json['day']);
+  }
+
+  bool valid()
+  {
+    DateTime now = new DateTime.now();
+    if(day.compareTo(now) < 0)
+    {
+      return false;
+    }
+    return true;
+  }
+
+  Map<String, dynamic> toJson() {
     return{
       "type" : type,
       "name" : name,
@@ -180,11 +216,11 @@ class Event extends Note
 
 abstract class NoteManager
 {
-  static Note MakeNoteFromMap(Map<String, dynamic> map)
+  static Note makeNoteFromMap(Map<String, dynamic> map)
   {
     String name = map['name'];
     String text = map['text'];
-    Subject subject = Subject.FromMap(map['subject']);
+    Subject subject = Subject.fromJson(map['subject']);
     switch(map['type'])
     {
       case 'Fixed':
