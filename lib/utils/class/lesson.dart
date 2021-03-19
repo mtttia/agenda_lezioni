@@ -58,6 +58,10 @@ class Lesson
   {
     return sumTimeOfDay(startTime, duration.hour, duration.minute);
   }
+  String get interval
+  {
+    return "${startTime.hour}:${startTime.minute} - ${endTime.hour}:${endTime.minute}";
+  }
   int durationType; //0 = Default, 1 = Customized
   int lessonType; //0 = Theory, 1 = Practice
   Subject subject;

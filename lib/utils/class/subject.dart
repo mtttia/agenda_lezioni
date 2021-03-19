@@ -28,7 +28,7 @@ class Subject
   {
     if(value.isEmpty)
     {
-      throw new Exception('Name is not valid');
+      throw new Exception('Note is not valid');
     }
     _note = value;
   }

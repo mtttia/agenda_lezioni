@@ -1,77 +1,118 @@
+library agenda;
 import 'package:flutter/material.dart';
+import 'pages/today.dart';
+import 'pages/week.dart';
+import 'pages/all-subject.dart';
+import 'pages/note.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() => _Home();
+}
+
+class _Home
+    extends State<Home> {
+  int _currentTabIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
-    const drawerHeader = UserAccountsDrawerHeader(
-      accountName: Text('User Name'),
-      accountEmail: Text('user.name@email.com'),
-      currentAccountPicture: CircleAvatar(
-        backgroundColor: Colors.white,
-        child: FlutterLogo(size: 42.0),
-      ),
-      otherAccountsPictures: <Widget>[
-        CircleAvatar(
-          backgroundColor: Colors.yellow,
-          child: Text('A'),
-        ),
-        CircleAvatar(
-          backgroundColor: Colors.red,
-          child: Text('B'),
-        )
-      ],
-    );
     final drawerItems = ListView(
       children: <Widget>[
-        //drawerHeader,
         ListTile(
-          title: const Text('To page 1'),
-          onTap: () => Navigator.of(context).push(_NewPage(1)),
+          title: Row(children: [
+            Icon(Icons.home),
+            SizedBox(width: 10),
+            Text('Home')
+          ],),
+          onTap: () {
+            setState(() {
+              _currentTabIndex = 0;
+            });
+            Navigator.pop(context);
+          },
         ),
         ListTile(
-          title: const Text('To page 2'),
-          onTap: () => Navigator.of(context).push(_NewPage(2)),
+          title: Row(children: [
+            Icon(Icons.calendar_view_day),
+            SizedBox(width: 10),
+            Text('Settimana')
+          ],),
+          onTap: () {
+            setState(() {
+              _currentTabIndex = 1;
+            });
+            Navigator.pop(context);
+          },
         ),
         ListTile(
-          title: const Text('other drawer item'),
-          onTap: () {},
+          title: Row(children: [
+            Icon(Icons.school),
+            SizedBox(width: 10),
+            Text('Lezioni')
+          ],),
+          onTap: () {
+            setState(() {
+              _currentTabIndex = 2;
+            });
+            Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: Row(children: [
+            Icon(Icons.event),
+            SizedBox(width: 10),
+            Text('Note')
+          ],),
+          onTap: () {
+            setState(() {
+              _currentTabIndex = 3;
+            });
+            Navigator.pop(context);
+          },
         ),
       ],
+    );
+    final _kTabPages = <Widget>[
+      Today(),
+      Week(),
+      AllSubject(),
+      Notes()
+    ];
+    final _kBottmonNavBarItems = <BottomNavigationBarItem>[
+      const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      const BottomNavigationBarItem(icon: Icon(Icons.calendar_view_day), label: 'Settimana'),
+      const BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Lezioni'),
+      const BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Note'),
+    ];
+    assert(_kTabPages.length == _kBottmonNavBarItems.length);
+    final bottomNavBar = BottomNavigationBar(
+      items: _kBottmonNavBarItems,
+      currentIndex: _currentTabIndex,
+      type: BottomNavigationBarType.fixed,
+      onTap: (int index) {
+        setState(() {
+          _currentTabIndex = index;
+        });
+      },
     );
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Agenda'),
+          title: const Text('Agenda Lezioni', style: TextStyle(
+            fontFamily: 'SyneMono',
+          ),),
         ),
-        body: HomePage(),
+        body: _kTabPages[_currentTabIndex],
         drawer: Drawer(
           child: drawerItems,
-        ));
-  }
-}
-
-class HomePage extends StatefulWidget
-{
-  @override
-  _HomePage createState() => _HomePage();
-
- 
-
-}
-
-class _HomePage extends State<StatefulWidget>
-{
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: const Center(
-        child : Text('testo da visualizzare'),
-      ),
+        ),
+        bottomNavigationBar: bottomNavBar,
     );
   }
-  
 }
+
+
 
 // <void> means this route returns nothing.
 class _NewPage extends MaterialPageRoute<void> {

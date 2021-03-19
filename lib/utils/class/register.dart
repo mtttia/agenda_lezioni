@@ -35,7 +35,7 @@ class Register
   {
     if(!(day >= 1 && day <= 7))
     {
-      throw new Exception("day not valid");
+      throw new Exception("day not valid: " + day.toString());
     }
     _currentDay = day;
   }
@@ -119,13 +119,13 @@ class Register
   {
     switch(day)
     {
-      case 1 : return monday;
-      case 2 : return tuesday;
-      case 3 : return wednesday;
-      case 4 : return thursday;
-      case 5 : return friday;
-      case 6 : return saturday;
-      case 7 : return sunday;
+      case 1 : return sortByStartTime(monday);
+      case 2 : return sortByStartTime(tuesday);
+      case 3 : return sortByStartTime(wednesday);
+      case 4 : return sortByStartTime(thursday);
+      case 5 : return sortByStartTime(friday);
+      case 6 : return sortByStartTime(saturday);
+      case 7 : return sortByStartTime(sunday);
     }
     throw new Exception("day not valid");
   }
@@ -133,6 +133,26 @@ class Register
   List<Lesson> getCurrentday()
   {
     return getday(currentDay);
+  }
+
+  List<Lesson> sortByStartTime(List<Lesson> l)
+  {
+    //bubble sort on startTime.hour
+    Lesson temp;
+    for(int i = 0; i < l.length; i++)
+    {
+      for(int j = 0; j < l.length - 1 - i; j++)
+      {
+        if(l[j].startTime.hour > l[j+1].startTime.hour)
+        {
+          temp = l[j];
+          l[j] = l[j+1];
+          l[j+1] = temp;
+        }
+      }
+    }
+
+    return l;
   }
 
   //ITERATION WITH SET TIME ========================================================
@@ -356,7 +376,7 @@ class Register
       else if(n is Event)
       {
         Event e = n;
-        if(e.day == d)
+        if(sameDateTime(e.day, d))
         {
           ret.add(e);
         }
@@ -369,6 +389,13 @@ class Register
   List<Note> getTodayNote()
   {
     return getNote(DateTime.now());
+  }
+
+  bool sameDateTime(DateTime d1, DateTime d2)
+  {
+    if(d1.day == d2.day && d1.month == d2.month && d1.year == d2.year)
+      return true;
+    return false;
   }
 
   ///add a note to the list
@@ -402,7 +429,7 @@ class Register
 
   ///get all the notes
   
-  List<FixedNote> getFixedNote()
+  List<FixedNote> get fixedNote
   {
     List<FixedNote> l = new List<FixedNote>();
     for(Note n in note)
@@ -416,7 +443,8 @@ class Register
     return l;
   }
 
-  List<DayNote> getDayNote()
+
+  List<DayNote> get dayNote
   {
     List<DayNote> l = new List<DayNote>();
     for(Note n in note)
@@ -430,7 +458,7 @@ class Register
     return l;
   }
 
-  List<VolatileNote> getVolatilNote()
+  List<VolatileNote> get volatilNote
   {
     List<VolatileNote> l = new List<VolatileNote>();
     for(Note n in note)
@@ -444,7 +472,7 @@ class Register
     return l;
   }
 
-  List<VolatilDayNote> getVolatilDayNote()
+  List<VolatilDayNote> get volatilDayNote
   {
     List<VolatilDayNote> l = new List<VolatilDayNote>();
     for(Note n in note)
@@ -458,7 +486,7 @@ class Register
     return l;
   }
 
-  List<Event> getEvent()
+  List<Event> get event
   {
     List<Event> l = new List<Event>();
     for(Note n in note)

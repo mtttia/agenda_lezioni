@@ -66,7 +66,7 @@ abstract class Note
   }
 }
 
-//classi figlie
+//son classes
 
 class FixedNote extends Note
 {
