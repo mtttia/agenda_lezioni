@@ -27,6 +27,19 @@ abstract class WeekDay
     };
   }
 
+  static Map<String, int> numDaysITA()
+  {
+    return{
+      'Lunedì' : 1,
+      'Martedì' : 2,
+      'Mercoledì' : 3,
+      'Giovedì' : 4,
+      'Venerdì' : 5,
+      'Sabato' : 6,
+      'Domenica' : 7,
+    };
+  }
+
   static int changeDay(int day, bool next)
   {
     if(next)

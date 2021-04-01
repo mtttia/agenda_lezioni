@@ -1,5 +1,7 @@
 library agenda;
 
+import 'package:agenda_lezioni/main.dart';
+import 'package:agenda_lezioni/pages/setTime/addLesson.dart';
 import 'package:flutter/material.dart';
 import 'subject.dart';
 import 'MapTimeOfDay.dart';
@@ -50,7 +52,7 @@ class Comparer
   }
 }
 
-class Lesson
+class Lesson extends Comparable
 {
   TimeOfDay duration;
   TimeOfDay startTime;
@@ -66,14 +68,20 @@ class Lesson
   int lessonType; //0 = Theory, 1 = Practice
   Subject subject;
 
-  Lesson(this.duration, this.startTime, this.durationType, this.lessonType, this.subject);
+  Lesson(this.duration, this.startTime, this.lessonType, this.subject, {this.durationType = 0})
+  {
+    assert(duration != null, "duration can't be null");
+    assert(startTime != null, "startTime can't be null");
+    assert(lessonType != null, "lessonType can't be null");
+    assert(subject != null, "subject can't be null");
+  }
   Lesson.fromJson(Map<String, dynamic> json)
   {
     duration = MapTimeOfDay.decode(json['duration']);
     startTime = MapTimeOfDay.decode(json['startTime']);
     durationType = json['durationType'];
     lessonType = json['lessonType'];
-    subject = json['subject'];
+    subject = Subject.fromJson(json['subject']);
   }
 
   static TimeOfDay sumTimeOfDay(TimeOfDay time, int hours, int minutes)
@@ -121,6 +129,15 @@ class Lesson
       return false;
     }
     return false;
+  }
+
+  @override
+  int compareTo(other) {
+    if(other is Lesson)
+    {
+      Lesson o = other;
+      return Comparer.comepareTimeOfDay(this.startTime, o.startTime);
+    }
   }
 
 

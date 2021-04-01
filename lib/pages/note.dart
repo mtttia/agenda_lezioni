@@ -6,6 +6,8 @@ import '../utils/status.dart';
 import '../widget/card.dart';
 import '../widget/text.dart';
 import '../utils/colors.dart';
+import 'add-note.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Notes extends StatelessWidget
 {
@@ -19,33 +21,55 @@ class Notes extends StatelessWidget
   }  
 }
 
+void setReset(Function() callback)
+{
+  reset = callback;
+}
+Function() reset;
 
 
-class TabsNote extends StatelessWidget {
+
+class TabsNote extends StatefulWidget {
   const TabsNote({Key key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    final _kTabPages = <Widget>[
-      ListFixedNote(),
-      ListDayNote(),
-      ListVolatileNote(),
-      ListVolatilDayNote(),
-      ListEvent(),
-    ];
-    final _kTabs = <Tab>[
+  TabsNoteState createState() => TabsNoteState();
+
+
+}
+
+class TabsNoteState extends State<TabsNote>
+{
+  List<Widget> _kTabPages = <Widget>[
+    ListFixedNote(),
+    ListDayNote(),
+    ListVolatileNote(),
+    ListVolatilDayNote(),
+    ListEvent(),
+  ];
+  List<Tab> _kTabs = <Tab>[
       const Tab(icon: Icon(Icons.mode_edit), text: 'fisse'),
       const Tab(icon: Icon(Icons.event_note), text: 'giorno'),
       const Tab(icon: Icon(Icons.flight), text: 'volatili'),
       const Tab(icon: Icon(Icons.data_usage), text: 'volatili e giorno'),
       const Tab(icon: Icon(Icons.event), text: 'eventi'),
     ];
+
+
+  @override
+  Widget build(BuildContext context) {
+    setReset(()=>{setState(()=>{_kTabPages = <Widget>[
+    ListFixedNote(),
+    ListDayNote(),
+    ListVolatileNote(),
+    ListVolatilDayNote(),
+    ListEvent(),
+  ]})});
     return DefaultTabController(
       length: _kTabs.length,
       child: Scaffold(
         appBar: AppBar(
           title: const Center(child: Text('Note')),
-          backgroundColor: AgendaBlue900,
+          backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
           // If `TabController controller` is not provided, then a
           // DefaultTabController ancestor must be provided instead.
           // Another way is to use a self-defined controller, c.f. "Bottom tab
@@ -57,14 +81,26 @@ class TabsNote extends StatelessWidget {
         body: TabBarView(
           children: _kTabPages,
         ),        
-      floatingActionButton: FloatingActionButton.extended(onPressed: ()=>{},
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: ()=>{
+          Navigator.of(context).push(AddNoteRoute(()=>{setState((){})}))
+        },
         icon: Icon(Icons.note_add), label: Text('Aggiungi nota'),
-        backgroundColor: AgendaBlue900,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
         )
       ),
     );
   }
+
+  void reload()
+  {
+    setState(()=>{});
+  }
+  
 }
+
+
+
 
 class ListFixedNote extends StatefulWidget
 {
@@ -79,10 +115,13 @@ class ListFixedNote extends StatefulWidget
 class _ListFixedNoteState extends State<ListFixedNote>
 {
   List<FixedNote> _list = Status.register.fixedNote;
+  List<Slidable> _items;
   FixedNote _current = null;
 
   @override
   Widget build(BuildContext context) {
+    Status.save();
+    print("length : " + Status.register.fixedNote.length.toString());
     return Scaffold(
       body: GridView.count(      
       crossAxisCount: 1,
@@ -93,70 +132,79 @@ class _ListFixedNoteState extends State<ListFixedNote>
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView.builder(
-      itemCount: _list.length,
-      itemBuilder: (context,index) {
-        final String item = _list[index].name;
-        return Dismissible(
-          key: Key(item),
-          onDismissed: (DismissDirection dir) {
-            setState(() {
-              _current = _list[index];
-            });
-            if(dir == DismissDirection.startToEnd)
-            {
-              //I remove the lesson
-              setState(() => {
-                this._list.removeAt(index)                  
-              });
-              
-              //remove the lesson from the status
-              Status.register.subject.remove(_current as Note);
-
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$item removed.'),
-                  action: SnackBarAction(
-                    label: 'UNDO',
-                    onPressed: () {                        
-                      setState(() => this._list.insert(index, _current));                        
-                      //Status.register.subject.add(_currentSubject);
-                    },
-                    
-                  ),
-                ),
-              );
-            }
-            else if(dir == DismissDirection.endToStart)
-            {
-              //I modify the note
-              //TODO: modify the current note
-            }
-
-
-          },
-          // Show a red background as the item is swiped away
-          background: Container(
-            color: Colors.red,
-            alignment: Alignment.centerLeft,
-            child: const Icon(Icons.delete),
-          ),
-          // Background when swipping from right to left
-          secondaryBackground: Container(
-            color: Colors.yellow,
-            alignment: Alignment.centerRight,
-            child: const Icon(Icons.construction),
-          ),
-          child: fixedNoteCard(_list[index]),
-        );
-      },
-    )
+          child: ListView(children: getListNote(fixedNoteCard)),
         )
       ],),
         )
       ],)
     );
   }
+
+  void deleteNote(Note n)
+  {
+    Status.register.removeNote(n);
+    setState(() {
+      
+      _list.remove(n);
+    });
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(n.name + ' rimossa'),
+        action: SnackBarAction(
+          label: 'UNDO', 
+          onPressed: (){
+            setState(() {
+              _list.add(n);
+              Status.save();
+            });
+          }
+        ),
+      )
+    );
+    Status.save();
+  }
+
+  void modifyNote(Note n)
+  {
+    //TODO : modify the note
+    Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
+    setState(() {});
+  }
+
+  List<Widget> getListNote(Function(Note n) f)
+  {
+    List<Widget> list = new List<Widget>();
+    for(Note n in _list)
+    {
+      list.add(getNote(n, f(n)));
+    }
+    return list;
+  }
+
+  Slidable getNote(Note n, Widget item)
+  {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      secondaryActions: [
+        IconSlideAction(
+          caption: 'Modifica',
+          color: AgendaYellow,
+          icon: Icons.construction,
+          onTap: () => modifyNote(n),
+        ),
+        IconSlideAction(              
+          caption: 'Elimina',
+          color: AgendaErrorRed,
+          icon: Icons.delete,
+          onTap: () => deleteNote(n),
+        ),
+      ],
+      child: item,
+    );
+  }
+
+
+  
 }
 
 
@@ -178,6 +226,7 @@ class _ListDayNoteState extends State<ListDayNote>
 
   @override
   Widget build(BuildContext context) {
+    Status.save();
     return Scaffold(
       body: GridView.count(      
       crossAxisCount: 1,
@@ -188,68 +237,73 @@ class _ListDayNoteState extends State<ListDayNote>
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView.builder(
-      itemCount: _list.length,
-      itemBuilder: (context,index) {
-        final String item = _list[index].name;
-        return Dismissible(
-          key: Key(item),
-          onDismissed: (DismissDirection dir) {
-            setState(() {
-              _current = _list[index];
-            });
-            if(dir == DismissDirection.startToEnd)
-            {
-              //I remove the lesson
-              setState(() => {
-                this._list.removeAt(index)                  
-              });
-              
-              //remove the lesson from the status
-              Status.register.subject.remove(_current as Note);
-
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$item removed.'),
-                  action: SnackBarAction(
-                    label: 'UNDO',
-                    onPressed: () {                        
-                      setState(() => this._list.insert(index, _current));                        
-                      //Status.register.subject.add(_currentSubject);
-                    },
-                    
-                  ),
-                ),
-              );
-            }
-            else if(dir == DismissDirection.endToStart)
-            {
-              //I modify the note
-              //TODO: modify the current note
-            }
-
-
-          },
-          // Show a red background as the item is swiped away
-          background: Container(
-            color: Colors.red,
-            alignment: Alignment.centerLeft,
-            child: const Icon(Icons.delete),
-          ),
-          // Background when swipping from right to left
-          secondaryBackground: Container(
-            color: Colors.yellow,
-            alignment: Alignment.centerRight,
-            child: const Icon(Icons.construction),
-          ),
-          child: dayNoteCard(_list[index]),
-        );
-      },
-    )
+          child: ListView(children: getListNote(fixedNoteCard)),
         )
       ],),
         )
       ],)
+    );
+  }
+
+  void deleteNote(Note n)
+  {
+    setState(() {
+      //Status.register.removeNote(n);
+      _list.remove(n);
+    });
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(n.name + ' rimossa'),
+        action: SnackBarAction(
+          label: 'UNDO', 
+          onPressed: (){            
+            setState(() {
+              _list.add(n);              
+            });
+            Status.save();
+          }
+        ),
+      )
+    );
+    Status.save();
+  }
+
+  void modifyNote(Note n)
+  {
+    //TODO : modify the note
+    Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
+    setState(() {});
+  }
+
+  List<Widget> getListNote(Function(Note n) f)
+  {
+    List<Widget> list = new List<Widget>();
+    for(Note n in _list)
+    {
+      list.add(getNote(n, f(n)));
+    }
+    return list;
+  }
+
+  Slidable getNote(Note n, Widget item)
+  {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      secondaryActions: [
+        IconSlideAction(
+          caption: 'Modifica',
+          color: AgendaYellow,
+          icon: Icons.construction,
+          onTap: () => modifyNote(n),
+        ),
+        IconSlideAction(              
+          caption: 'Elimina',
+          color: AgendaErrorRed,
+          icon: Icons.delete,
+          onTap: () => deleteNote(n),
+        ),
+      ],
+      child: item,
     );
   }
 }
@@ -274,6 +328,7 @@ class _ListVolatileNoteState extends State<ListVolatileNote>
 
   @override
   Widget build(BuildContext context) {
+    Status.save();
     return Scaffold(
       body: GridView.count(      
       crossAxisCount: 1,
@@ -284,68 +339,76 @@ class _ListVolatileNoteState extends State<ListVolatileNote>
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView.builder(
-      itemCount: _list.length,
-      itemBuilder: (context,index) {
-        final String item = _list[index].name;
-        return Dismissible(
-          key: Key(item),
-          onDismissed: (DismissDirection dir) {
-            setState(() {
-              _current = _list[index];
-            });
-            if(dir == DismissDirection.startToEnd)
-            {
-              //I remove the lesson
-              setState(() => {
-                this._list.removeAt(index)                  
-              });
-              
-              //remove the lesson from the status
-              Status.register.subject.remove(_current as Note);
-
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$item removed.'),
-                  action: SnackBarAction(
-                    label: 'UNDO',
-                    onPressed: () {                        
-                      setState(() => this._list.insert(index, _current));                        
-                      //Status.register.subject.add(_currentSubject);
-                    },
-                    
-                  ),
-                ),
-              );
-            }
-            else if(dir == DismissDirection.endToStart)
-            {
-              //I modify the note
-              //TODO: modify the current note
-            }
-
-
-          },
-          // Show a red background as the item is swiped away
-          background: Container(
-            color: Colors.red,
-            alignment: Alignment.centerLeft,
-            child: const Icon(Icons.delete),
-          ),
-          // Background when swipping from right to left
-          secondaryBackground: Container(
-            color: Colors.yellow,
-            alignment: Alignment.centerRight,
-            child: const Icon(Icons.construction),
-          ),
-          child: volatileNoteCard(_list[index]),
-        );
-      },
-    )
+          child: ListView(children: getListNote(fixedNoteCard)),
         )
       ],),
         )
       ],)
+    );
+  }
+
+  void deleteNote(Note n)
+  {
+    Status.register.removeNote(n);
+    setState(() {
+      //Status.register.removeNote(n);
+      _list.remove(n);
+    });
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(n.name + ' rimossa'),
+        action: SnackBarAction(
+          label: 'UNDO', 
+          onPressed: (){
+            setState(() {
+              _list.add(n);
+              
+            });
+            Status.save();
+          }
+        ),
+      )
+    );
+    Status.save();
+    
+  }
+
+  void modifyNote(Note n)
+  {
+    //TODO : modify the note
+    Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
+    setState(() {});
+  }
+
+  List<Widget> getListNote(Function(Note n) f)
+  {
+    List<Widget> list = new List<Widget>();
+    for(Note n in _list)
+    {
+      list.add(getNote(n, f(n)));
+    }
+    return list;
+  }
+
+  Slidable getNote(Note n, Widget item)
+  {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      secondaryActions: [
+        IconSlideAction(
+          caption: 'Modifica',
+          color: AgendaYellow,
+          icon: Icons.construction,
+          onTap: () => modifyNote(n),
+        ),
+        IconSlideAction(              
+          caption: 'Elimina',
+          color: AgendaErrorRed,
+          icon: Icons.delete,
+          onTap: () => deleteNote(n),
+        ),
+      ],
+      child: item,
     );
   }
 }
@@ -369,6 +432,7 @@ class _ListVolatilDayNoteState extends State<ListVolatilDayNote>
 
   @override
   Widget build(BuildContext context) {
+    Status.save();
     return Scaffold(
       body: GridView.count(      
       crossAxisCount: 1,
@@ -379,68 +443,75 @@ class _ListVolatilDayNoteState extends State<ListVolatilDayNote>
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView.builder(
-      itemCount: _list.length,
-      itemBuilder: (context,index) {
-        final String item = _list[index].name;
-        return Dismissible(
-          key: Key(item),
-          onDismissed: (DismissDirection dir) {
-            setState(() {
-              _current = _list[index];
-            });
-            if(dir == DismissDirection.startToEnd)
-            {
-              //I remove the lesson
-              setState(() => {
-                this._list.removeAt(index)                  
-              });
-              
-              //remove the lesson from the status
-              Status.register.subject.remove(_current as Note);
-
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$item removed.'),
-                  action: SnackBarAction(
-                    label: 'UNDO',
-                    onPressed: () {                        
-                      setState(() => this._list.insert(index, _current));                        
-                      //Status.register.subject.add(_currentSubject);
-                    },
-                    
-                  ),
-                ),
-              );
-            }
-            else if(dir == DismissDirection.endToStart)
-            {
-              //I modify the note
-              //TODO: modify the current note
-            }
-
-
-          },
-          // Show a red background as the item is swiped away
-          background: Container(
-            color: Colors.red,
-            alignment: Alignment.centerLeft,
-            child: const Icon(Icons.delete),
-          ),
-          // Background when swipping from right to left
-          secondaryBackground: Container(
-            color: Colors.yellow,
-            alignment: Alignment.centerRight,
-            child: const Icon(Icons.construction),
-          ),
-          child: volatilDayNoteCard(_list[index]),
-        );
-      },
-    )
+          child: ListView(children: getListNote(fixedNoteCard)),
         )
       ],),
         )
       ],)
+    );
+  }
+
+  void deleteNote(Note n)
+  {
+    Status.register.removeNote(n);
+    setState(() {
+      //Status.register.removeNote(n);
+      _list.remove(n);
+    });
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(n.name + ' rimossa'),
+        action: SnackBarAction(
+          label: 'UNDO', 
+          onPressed: (){
+            setState(() {
+              _list.add(n);
+              
+            });
+            Status.save();
+          }
+        ),
+      )
+    );
+    Status.save();
+  }
+
+  void modifyNote(Note n)
+  {
+    //TODO : modify the note
+    Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
+    setState(() {});
+  }
+
+  List<Widget> getListNote(Function(Note n) f)
+  {
+    List<Widget> list = new List<Widget>();
+    for(Note n in _list)
+    {
+      list.add(getNote(n, f(n)));
+    }
+    return list;
+  }
+
+  Slidable getNote(Note n, Widget item)
+  {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      secondaryActions: [
+        IconSlideAction(
+          caption: 'Modifica',
+          color: AgendaYellow,
+          icon: Icons.construction,
+          onTap: () => modifyNote(n),
+        ),
+        IconSlideAction(              
+          caption: 'Elimina',
+          color: AgendaErrorRed,
+          icon: Icons.delete,
+          onTap: () => deleteNote(n),
+        ),
+      ],
+      child: item,
     );
   }
 }
@@ -465,6 +536,7 @@ class _ListEventState extends State<ListEvent>
 
   @override
   Widget build(BuildContext context) {
+    Status.save();
     return Scaffold(
       body: GridView.count(      
       crossAxisCount: 1,
@@ -475,68 +547,76 @@ class _ListEventState extends State<ListEvent>
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView.builder(
-      itemCount: _list.length,
-      itemBuilder: (context,index) {
-        final String item = _list[index].name;
-        return Dismissible(
-          key: Key(item),
-          onDismissed: (DismissDirection dir) {
-            setState(() {
-              _current = _list[index];
-            });
-            if(dir == DismissDirection.startToEnd)
-            {
-              //I remove the lesson
-              setState(() => {
-                this._list.removeAt(index)                  
-              });
-              
-              //remove the lesson from the status
-              Status.register.subject.remove(_current as Note);
-
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$item removed.'),
-                  action: SnackBarAction(
-                    label: 'UNDO',
-                    onPressed: () {                        
-                      setState(() => this._list.insert(index, _current));                        
-                      //Status.register.subject.add(_currentSubject);
-                    },
-                    
-                  ),
-                ),
-              );
-            }
-            else if(dir == DismissDirection.endToStart)
-            {
-              //I modify the note
-              //TODO: modify the current note
-            }
-
-
-          },
-          // Show a red background as the item is swiped away
-          background: Container(
-            color: Colors.red,
-            alignment: Alignment.centerLeft,
-            child: const Icon(Icons.delete),
-          ),
-          // Background when swipping from right to left
-          secondaryBackground: Container(
-            color: Colors.yellow,
-            alignment: Alignment.centerRight,
-            child: const Icon(Icons.construction),
-          ),
-          child: eventCard(_list[index]),
-        );
-      },
-    )
+          child: ListView(children: getListNote(fixedNoteCard)),
         )
       ],),
         )
       ],)
+    );
+  }
+
+    void deleteNote(Note n)
+  {
+    Status.register.removeNote(n);
+    setState(() {
+      //Status.register.removeNote(n);
+      _list.remove(n);
+    });
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(n.name + ' rimossa'),
+        action: SnackBarAction(
+          label: 'UNDO', 
+          onPressed: (){
+            setState(() {
+              _list.add(n);
+              
+            });
+            Status.save();
+          }
+        ),
+      )
+    );
+    Status.save();
+    
+  }
+
+  void modifyNote(Note n)
+  {
+    //TODO : modify the note
+    Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
+    setState(() {});
+  }
+
+  List<Widget> getListNote(Function(Note n) f)
+  {
+    List<Widget> list = new List<Widget>();
+    for(Note n in _list)
+    {
+      list.add(getNote(n, f(n)));
+    }
+    return list;
+  }
+
+  Slidable getNote(Note n, Widget item)
+  {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      secondaryActions: [
+        IconSlideAction(
+          caption: 'Modifica',
+          color: AgendaYellow,
+          icon: Icons.construction,
+          onTap: () => modifyNote(n),
+        ),
+        IconSlideAction(              
+          caption: 'Elimina',
+          color: AgendaErrorRed,
+          icon: Icons.delete,
+          onTap: () => deleteNote(n),
+        ),
+      ],
+      child: item,
     );
   }
 }

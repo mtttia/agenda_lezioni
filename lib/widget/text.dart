@@ -1,6 +1,6 @@
 library agenda;
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 
 class FontText extends StatelessWidget
@@ -36,7 +36,7 @@ class Header extends StatelessWidget
         Text(
           this.text,
           style: TextStyle(
-            color: AgendaBlue900,
+            color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
             fontFamily: 'Comfortaa',
             fontSize: 30.0,
           ),
@@ -45,6 +45,28 @@ class Header extends StatelessWidget
       ],
     );
   }  
+}
+
+class Subtitle extends StatelessWidget
+{
+  Subtitle(this.text);
+  String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 15),
+        Text(text, style: TextStyle(
+          color: Theme.of(context).brightness == Brightness.dark ? Colors.grey : AgendaBlue900,
+          fontFamily: 'OpenSans',
+          fontSize: 20.0,
+        ), textAlign: TextAlign.center,),
+      ],
+    );
+  }
+
+  
 }
 
 class IconText extends StatelessWidget
@@ -71,6 +93,23 @@ class IconText extends StatelessWidget
         ),
       ],
   );
+  }
+  
+}
+
+class AppBarText extends StatelessWidget
+{
+  AppBarText(this.text);
+  String text;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      this.text,
+      style: TextStyle(
+        fontFamily: 'SyneMono',
+      ),
+      textAlign: TextAlign.center,
+    );
   }
   
 }

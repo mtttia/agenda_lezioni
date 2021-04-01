@@ -49,7 +49,7 @@ abstract class Note
   {
     name = json['nome'];
     text = json['text'];
-    subject = json['text'];
+    subject = Subject.fromJson(json['text']);
   }
 
   @override
@@ -64,6 +64,17 @@ abstract class Note
       "subject" : subject
     };
   }
+
+  @override
+  bool operator ==(other)
+  {
+    if(other is Note)
+    {
+      if(other._name == this.name)
+        return true;
+    }
+    return false;
+  }
 }
 
 //son classes
@@ -72,7 +83,7 @@ class FixedNote extends Note
 {
   FixedNote(String n, String t, Subject s) : super(n, t, s){}
   FixedNote.fromJson(Map<String, dynamic> json) : super.fromJson(json){}
-  static const String type = "Fixed";
+  final String type = "Fixed";
 
   @override
   Map<String, dynamic> toJson() {
@@ -262,4 +273,14 @@ DateTime getDatetime(Map<String, dynamic> map)
 {
   DateTime date = new DateTime(map['day'], map['month'], map['year']);
   return date;
+}
+
+String noteTypeITA(Note n)
+{
+  if(n is FixedNote) return 'generica';
+  if(n is DayNote) return 'giorno';
+  if(n is VolatileNote) return 'volatile';
+  if(n is VolatilDayNote) return 'volatile e giorno';
+  if(n is Event) return 'evento';
+  throw new Exception('internal error');
 }

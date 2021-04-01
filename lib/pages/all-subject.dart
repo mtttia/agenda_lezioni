@@ -6,6 +6,8 @@ import '../utils/status.dart';
 import '../widget/card.dart';
 import '../widget/text.dart';
 import '../utils/colors.dart';
+import 'add-subject.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AllSubject extends StatelessWidget
 {
@@ -30,83 +32,97 @@ class SubjectList extends StatefulWidget {
   const SubjectList({Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
+  _SubjectListState createState() {
     return _SubjectListState();
   }
+
 }
 
 class _SubjectListState extends State<SubjectList> {
 
-  List<Subject> _list = Status.register.subject;
+  List<Subject> _subject = Status.register.subject;
+  List<Slidable> _items;
   Subject _currentSubject = null;
+
 
   @override
   Widget build(BuildContext context) {
     print(Status.register.subject.length);
     return Scaffold(
-      body: ListView.builder(
-        itemCount: _list.length,
-        itemBuilder: (context,index) {
-          final String item = _list[index].name;
-          return Dismissible(
-            key: Key(item),
-            onDismissed: (DismissDirection dir) {
-              setState(() {
-                _currentSubject = _list[index];
-              });
-              if(dir == DismissDirection.startToEnd)
-              {
-                //I remove the lesson
-                setState(() => {
-                  this._list.removeAt(index)                  
-                });
-                
-                //remove the lesson from the status
-                Status.register.subject.remove(_currentSubject);
-
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('$item removed.'),
-                    action: SnackBarAction(
-                      label: 'UNDO',
-                      onPressed: () {                        
-                        setState(() => this._list.insert(index, _currentSubject));                        
-                        //Status.register.subject.add(_currentSubject);
-                      },
-                      
-                    ),
-                  ),
-                );
-              }
-              else if(dir == DismissDirection.endToStart)
-              {
-                //I modify the lesson
-                //TODO: modify the current lesson
-              }
-
-
-            },
-            // Show a red background as the item is swiped away
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerLeft,
-              child: const Icon(Icons.delete),
-            ),
-            // Background when swipping from right to left
-            secondaryBackground: Container(
-              color: Colors.yellow,
-              alignment: Alignment.centerRight,
-              child: const Icon(Icons.construction),
-            ),
-            child: subjectCard(_list[index]),
-          );
+      body: ListView(children: getListSubject()),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: ()=>{
+          Navigator.of(context).push(AddSubjectRoute(()=>{setState(()=>{})}))
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(onPressed: ()=>{},
         icon: Icon(Icons.add), label: Text('Aggiungi lezione'),
-        backgroundColor: AgendaBlue900,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
         )
     );
   }
+
+
+  
+  void deleteSubject(BuildContext context, Subject s)
+  {
+    
+    setState(() {
+      Status.register.removeSubject(s);
+    });
+    Scaffold.of(context).showSnackBar(
+    SnackBar(
+      content: Text(s.name + ' rimossa.'),
+      action: SnackBarAction(
+        label: 'UNDO',
+        onPressed: () {                        
+          setState(() => this._subject.add(s));
+          Status.save();
+        },
+        
+      ),
+    ),
+    );
+    Status.save();
+  }
+
+  void modifySubject(Subject s)
+  {
+    Navigator.of(context).push(AddSubjectRoute(()=>{setState(()=>{})}, modify: true, oldSubject: s));
+    setState(() => {});
+  }
+
+  List<Widget> getListSubject()
+  {
+    List<Widget> list = new List<Widget>();
+    for(Subject s in _subject)
+    {
+      list.add(getSubject(s));
+    }
+    return list;
+  }
+
+  Slidable getSubject(Subject s)
+  {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      //actions: mainActions, // swipe right
+      secondaryActions: [
+        IconSlideAction(
+          caption: 'Modifica',
+          color: AgendaYellow,
+          icon: Icons.construction,
+          onTap: () => modifySubject(s),
+        ),
+        IconSlideAction(              
+          caption: 'Elimina',
+          color: AgendaErrorRed,
+          icon: Icons.delete,
+          onTap: () => deleteSubject(context, s),
+        ),
+      ], //swipe left
+      child: SubjectCard(s),
+    );
+  }
 }
+
+
 

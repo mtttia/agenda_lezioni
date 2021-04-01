@@ -4,6 +4,7 @@ import 'pages/today.dart';
 import 'pages/week.dart';
 import 'pages/all-subject.dart';
 import 'pages/note.dart';
+import 'widget/text.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -99,9 +100,7 @@ class _Home
     );
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Agenda Lezioni', style: TextStyle(
-            fontFamily: 'SyneMono',
-          ),),
+          title: AppBarText('Agenda Lezioni'),
         ),
         body: _kTabPages[_currentTabIndex],
         drawer: Drawer(

@@ -1,7 +1,7 @@
 library agenda;
 
 import 'dart:convert';
-
+import 'class/lesson.dart';
 import 'package:agenda_lezioni/utils/class/register.dart';
 import 'package:agenda_lezioni/utils/fileManager.dart';
 
@@ -10,12 +10,12 @@ class Status
   static Register register;
   static bool firstOpen;
   
-  static void initializeAll(bool first)
+  static void initalize()
   {
-    firstOpen = first;
+    firstOpen = true;
     DateTime today = new DateTime.now();
     register = new Register(today.weekday);
-    //TODO : create the file register.json
+    //TODO : delete the comment
     //FileManager.save(jsonEncode(register.toJson()));
   }
 
@@ -31,6 +31,11 @@ class Status
     {
       throw ex;
     }
+  }
+
+  static void save()
+  {
+    FileManager.save(jsonEncode(register.toJson()));
   }
 
 }

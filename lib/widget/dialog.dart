@@ -2,7 +2,7 @@ library agenda;
 
 import 'package:flutter/material.dart';
 
-void Dialog(BuildContext context, String title, String content)
+void dialog(BuildContext context, String title, String content)
 {
   showDialog<String>(
     context: context,

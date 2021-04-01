@@ -5,30 +5,50 @@ import 'package:flutter/material.dart';
 import '../utils/class/lesson.dart';
 import '../utils/colors.dart';
 import '../utils/class/subject.dart';
+import '../pages/subjectPage.dart';
 import 'text.dart';
 
-Card lessonCard(Lesson l, int i)
+Widget lessonCard(Lesson l, int i)
 {
-  return Card(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20.0),
-    ),
-    elevation: 5,
-    shadowColor: AgendaBlue900,
-    clipBehavior: Clip.antiAlias,
-    child: Column(
-      children: [
-        ListTile(
-          leading: FontText(i.toString()),
-          title: FontText(l.subject.name),
-          subtitle: Text(
-            l.interval,
-            style: TextStyle(color: Colors.black.withOpacity(0.6)),
+  return LessonCard(l, i);
+}
+
+class LessonCard extends StatelessWidget
+{
+  LessonCard(this.l, this.i);
+  Lesson l;
+  int i;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      elevation: 5,
+      //shadowColor: AgendaBlue900,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            leading: FontText(i.toString()),
+            title: FontText(l.subject.name),
+            subtitle: Text(
+              l.interval,
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+            trailing: IconButton(
+              onPressed: ()=> {Navigator.of(context).push(SubjectPageRoute(l.subject))},
+              icon: Icon(Icons.trending_up),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
-  );
+    );
+  }
+  
 }
 
 Card lessonCardCurrent(Lesson l, int i)
@@ -38,7 +58,7 @@ Card lessonCardCurrent(Lesson l, int i)
       borderRadius: BorderRadius.circular(20.0),
     ),
     elevation: 5,
-    shadowColor: AgendaBlue900,
+    //shadowColor: AgendaBlue900,
     color: AgendaBlue300,
     clipBehavior: Clip.antiAlias,
     child: Column(
@@ -105,8 +125,28 @@ Card noteCard(Note n)
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20.0),
     ),
-    shadowColor: AgendaBlue400,
+    //shadowColor: AgendaBlue400,
     elevation: 5,
+    clipBehavior: Clip.antiAlias,
+    child: Column(
+      children: [
+        ListTile(
+          leading: Text(n.subject.name),
+          title: Text(n.name),
+          subtitle: Text(
+            n.text,
+            style: TextStyle(color: Colors.black.withOpacity(0.6)),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Card noteCardNormal(Note n)
+{
+  return Card(
+    //shadowColor: AgendaBlue400,
     clipBehavior: Clip.antiAlias,
     child: Column(
       children: [
@@ -146,16 +186,19 @@ Widget noteCardInRow(Note n)
 
 
 //subject
-Card subjectCard(Subject s)
+Widget subjectCard(Subject s)
 {
-  return Card(
-    /*
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20.0),
-    ),
-    */
-    //elevation: 5,
-    //shadowColor: AgendaBlue900,
+  return SubjectCard(s);
+}
+
+class SubjectCard extends StatelessWidget
+{
+  SubjectCard(this.s);
+  Subject s;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(    
     clipBehavior: Clip.antiAlias,
     child: Column(
       children: [
@@ -165,35 +208,42 @@ Card subjectCard(Subject s)
             s.note,
             style: TextStyle(color: Colors.black.withOpacity(0.6)),
           ),
+          trailing: IconButton(
+            onPressed: ()=> {Navigator.of(context).push(SubjectPageRoute(s))},
+            icon: Icon(Icons.trending_up),
+          ),
         ),
       ],
     ),
+    
   );
+  }
+  
 }
 
 Widget fixedNoteCard(Note n)
 {
-  return noteCard(n);
+  return noteCardNormal(n);
 }
 
 Widget dayNoteCard(Note n)
 {
-  return noteCard(n);
+  return noteCardNormal(n);
 }
 
 Widget volatileNoteCard(Note n)
 {
-  return noteCard(n);
+  return noteCardNormal(n);
 }
 
 Widget volatilDayNoteCard(Note n)
 {
-  return noteCard(n);
+  return noteCardNormal(n);
 }
 
 Widget eventCard(Note n)
 {
-  return noteCard(n);
+  return noteCardNormal(n);
 }
 
 Widget subjectCardInRow(Subject s)

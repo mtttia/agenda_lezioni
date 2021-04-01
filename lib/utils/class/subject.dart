@@ -26,17 +26,19 @@ class Subject
   }
   set note(String value)
   {
-    if(value.isEmpty)
+    if(value == null && value == "")
     {
       throw new Exception('Note is not valid');
     }
     _note = value;
   }
 
-  Subject(String na, String no)
+  Subject(String na, {String note = ""})
   {
+    if(note == "")
+      note = " ";//if not it give error in the widget
     name = na;
-    note = no;
+    this.note = note;
   }
 
   Subject.fromJson(Map<String, dynamic> map)

@@ -59,16 +59,48 @@ class Register
   Register.fromJson(Map<String, dynamic> json, int today)
   {
     currentDay = today;
-    monday = json['monday'];
-    tuesday = json['tuesday'];
-    wednesday = json['wednesday'];
-    thursday = json['thursday'];
-    friday = json['friday'];
-    saturday = json['saturday'];
-    sunday = json['sunday'];
-    subject = json['subject'];
-    note = json['note'];
+    monday = json['monday'].length == 0 ? new List<Lesson>() : parseListLesson(json['monday']);
+    tuesday = json['tuesday'].length == 0 ? new List<Lesson>() : parseListLesson(json['tuesday']);
+    wednesday = json['wednesday'].length == 0 ? new List<Lesson>() : parseListLesson(json['wednesday']);
+    thursday = json['thursday'].length == 0 ? new List<Lesson>() : parseListLesson(json['thursday']);
+    friday = json['friday'].length == 0 ? new List<Lesson>() : parseListLesson(json['friday']);
+    saturday = json['saturday'].length == 0 ? new List<Lesson>() : parseListLesson(json['saturday']);
+    sunday = json['sunday'].length == 0 ? new List<Lesson>() : parseListLesson(json['sunday']);
+    print(json['subject'].runtimeType.toString());
+    subject = json['subject'].length == 0 ? new List<Subject>() : parseListSubject(json['subject']);
+    note = json['note'].length == 0 ? new List<Note>() : parseListNote(json['note']);
     defaultDuration = MapTimeOfDay.decode(json['defaultDuration']);
+  }
+
+  List<Lesson> parseListLesson(List<dynamic> list)
+  {
+    List<Lesson> ret = new List<Lesson>();
+    for(dynamic d in list)
+    {
+      ret.add(Lesson.fromJson(d));
+    }
+    return ret;
+  }
+
+  List<Note> parseListNote(List<dynamic> list)
+  {
+    //TODO : implement parseListNote
+    List<Note> ret = new List<Note>();
+    for(dynamic d in list)
+    {
+      ret.add(NoteManager.makeNoteFromMap(d));
+    }
+    return ret;
+  }
+
+  List<Subject> parseListSubject(List<dynamic> list)
+  {
+    List<Subject> ret = new List<Subject>();
+    for(dynamic d in list)
+    {
+      ret.add(Subject.fromJson(d));
+    }
+    return ret;
   }
 
   void checkVolatilNote()
@@ -173,6 +205,8 @@ class Register
   void addLesson(List<Lesson> v, Lesson l)
   {
     if(validLesson(v, l))
+    //TODO : validLesson don't work
+    //if(true)
     {
       //lesson can be added
       v.add(l);
@@ -188,36 +222,48 @@ class Register
   {
     
     bool good = true;
-    //first condition: the start time and the end time must be out of each range
-    for(int i = 0; i < l.length && good; i++)
+    for(Lesson les in l)
     {
-        if(!(Comparer.comepareTimeOfDay(lesson.startTime, l[i].startTime) < 0 && Comparer.comepareTimeOfDay(lesson.startTime, l[i].endTime) >= 0))
-        {
-            good = false;
-        }
-        else
-        {
-          
-          if(!(Comparer.comepareTimeOfDay(lesson.endTime, l[i].startTime) < 0 && Comparer.comepareTimeOfDay(lesson.endTime, l[i].endTime) >= 0))
-          {
-              good = false;
-          }
-        }
-    }
-
-    if(good)
-    {
-        //second condition: the start time of each lesson must be out of the lesson range
-        for(int i = 0; i < l.length && good; i++)
-        {
-          if(!(Comparer.comepareTimeOfDay(l[i].startTime, lesson.startTime) < 0 && Comparer.comepareTimeOfDay(l[i].startTime, lesson.endTime) >= 0))
-          {
-              good = true;
-          }
-        }
+      good = lessonIntegrationOk(lesson, les);
+      if(!good)
+        break;
     }
 
     return good;
+  }
+
+  bool lessonIntegrationOk(Lesson l1, Lesson l2)
+  {
+    TimeOfDay a = l2.startTime, b = l2.endTime, c = l1.startTime, d = l1.endTime;
+    if(Comparer.comepareTimeOfDay(c, b) >= 0)
+      return true;
+    if(Comparer.comepareTimeOfDay(d, a) <= 0)
+      return true;
+    return false;
+  }
+
+  int getIdLesson(int day, Lesson l)
+  {
+    switch(day)
+    {
+      case 1 : return monday.indexOf(l);
+      case 2 : return tuesday.indexOf(l);
+      case 3 : return wednesday.indexOf(l);
+      case 4 : return thursday.indexOf(l);
+      case 5 : return friday.indexOf(l);
+      case 6 : return saturday.indexOf(l);
+      case 7 : return sunday.indexOf(l);
+    }
+  }
+
+  void modifyLessonByLesson(int day, Lesson oldLesson, Lesson l)
+  {
+    int id = getIdLesson(day, oldLesson);
+    //bool p = oldLesson == monday[0];
+    //print(p.toString());
+    print(monday.length);
+    print('ID : ${id}');
+    modifyLessonById(day, l, id);
   }
 
   ///modify a lesson given the day and the id
@@ -240,6 +286,7 @@ class Register
       throw ex;
     }
   }
+
   //void ModifyLesson(DayOfWeek day, Lezione lVecchia, Lezione lNuova)
   void modifyLesson(List<Lesson> v, Lesson l, int id)
   {
@@ -272,7 +319,7 @@ class Register
   ///remove a lesson from a day
   void removeLesson(int day, Lesson l)
   {
-
+    //TODO: Implement remove lesson from a day
   }
 
   void remove(List<Lesson> v, Lesson l)
@@ -280,13 +327,16 @@ class Register
     v.remove(l);
   }
 
+  
+
   //MODIFICA MATERIA ========================================================================
   ///add a new Subject to the Subject List
   void addSubject(Subject s)
   {
     if(!subject.contains(s))
         subject.add(s);
-    throw new Exception("this subject already exists");
+    else
+      throw new Exception("this subject already exists");
   }
 
   ///modify an existent Subject
@@ -338,6 +388,72 @@ class Register
         l.removeAt(i);
       }
     }
+  }
+
+  Map<String, dynamic> getSubjectInfo(Subject s)
+  {
+    if(subject.contains(s))
+    {
+      return
+      {
+        'name' : s.name,
+        'note' : s.note,
+        'lessonNumber' : _getLessonsNumber(s),
+        'dayWithLesson' : _dayWithLesson(s),
+        'noteWithSubject' : _noteWithSubject(s),
+      };
+    }
+    else
+      throw new Exception('this subject not extist');
+  }
+
+  int _getLessonsNumber(Subject s)
+  {
+    int count = 0;
+    count += _getLessonsNumberInList(monday, s);
+    count += _getLessonsNumberInList(tuesday, s);
+    count += _getLessonsNumberInList(wednesday, s);
+    count += _getLessonsNumberInList(thursday, s);
+    count += _getLessonsNumberInList(friday, s);
+    count += _getLessonsNumberInList(saturday, s);
+    count += _getLessonsNumberInList(sunday, s);
+    return count;
+  }
+  int _getLessonsNumberInList(List<Lesson> l, Subject s)
+  {
+    int count = 0;
+    for(Lesson les in l)
+    {
+      if(les.subject == s)
+      {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  List<List<int>> _dayWithLesson(Subject s)
+  {
+    List<List<int>> days = new List<List<int>>();
+    if(_getLessonsNumberInList(monday, s) > 0){days.add([1, _getLessonsNumberInList(monday, s)]);}
+    if(_getLessonsNumberInList(tuesday, s) > 0){days.add([2, _getLessonsNumberInList(tuesday, s)]);}
+    if(_getLessonsNumberInList(wednesday, s) > 0){days.add([3, _getLessonsNumberInList(wednesday, s)]);}
+    if(_getLessonsNumberInList(thursday, s) > 0){days.add([4, _getLessonsNumberInList(thursday, s)]);}
+    if(_getLessonsNumberInList(friday, s) > 0){days.add([5, _getLessonsNumberInList(friday, s)]);}
+    if(_getLessonsNumberInList(saturday, s) > 0){days.add([6, _getLessonsNumberInList(saturday, s)]);}
+    if(_getLessonsNumberInList(sunday, s) > 0){days.add([7, _getLessonsNumberInList(sunday, s)]);}
+    return days;
+  }
+
+  List<Note> _noteWithSubject(Subject s)
+  {
+    List<Note> list = new List<Note>();
+    for(Note n in note)
+    {
+      if(n.subject == s)
+        list.add(n);
+    }
+    return list;
   }
 
   //ITERAZIONI CON LE NOTE
@@ -405,7 +521,8 @@ class Register
     {
       note.add(n);
     }
-    throw new Exception('this note already exists');
+    else
+      throw new Exception('this note already exists');
   }
 
   ///modify a note on the list

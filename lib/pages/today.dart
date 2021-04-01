@@ -8,6 +8,7 @@ import '../utils/class/note.dart';
 import '../widget/card.dart';
 import '../widget/text.dart';
 import '../utils/colors.dart';
+import 'setTime/setTime.dart';
 
 
 
@@ -41,9 +42,11 @@ class _today extends State<Today>
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(onPressed: ()=>{},
+      floatingActionButton: FloatingActionButton.extended(onPressed: ()=>{
+        Navigator.of(context).push(SetTimeRoute(()=>{setState(()=>{})}))
+      },
         icon: Icon(Icons.toggle_on), label: Text('imposta orario'),
-        backgroundColor: AgendaBlue900,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
         )
     );
   }
