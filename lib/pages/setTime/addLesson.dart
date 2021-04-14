@@ -7,6 +7,7 @@ import '../../utils/colors.dart';
 import '../../utils/status.dart';
 import '../../utils/class/lesson.dart';
 import '../../widget/dialog.dart';
+import '../../widget/buttonStyle.dart';
 
 class AddLessonRoute extends MaterialPageRoute<void>
 {
@@ -16,6 +17,7 @@ class AddLessonRoute extends MaterialPageRoute<void>
   });
 }
 
+// ignore: must_be_immutable
 class AddLesson extends StatefulWidget
 {
   AddLesson(this.callback, this.day, {this.modify = false, this.oldLesson});
@@ -32,6 +34,10 @@ class _AddLesson extends State<AddLesson>
   _AddLesson(this.callback, this.day, {this.modify = false, this.oldLesson})
   {
     duration = _duration;
+    _startTime = Status.register.getNextLessonTime(this.day);
+    startTime = _startTime;
+    _selectedType = 'teoria';
+    lessonTypeS = _selectedType;
     if(modify)
     {
       //I set all the parameters to oldLesson parameters
@@ -97,9 +103,10 @@ class _AddLesson extends State<AddLesson>
           ListTile(
             title: TextButton.icon(
               icon: Icon(Icons.schedule),
-              label: FontText('ora di inizio'),//TODO: define startTime default
+              label: FontText('ora di inizio'),
+              style: textButtonStyle(),
               onPressed: ()=>{
-                getTimePicker(context, 'seleziona l\'ora di inizio della lezione').then((value) => {
+                getTimePicker(context, 'seleziona l\'ora di inizio della lezione', startTime: _startTime).then((value) => {
                   setState(()=>{
                     startTime = value,
                     _startTime = value
@@ -113,6 +120,7 @@ class _AddLesson extends State<AddLesson>
             title: TextButton.icon(
               icon: Icon(Icons.schedule),
               label: FontText('durata'),
+              style: textButtonStyle(),
               onPressed: ()=>{
                 getTimePicker(context, 'seleziona la durata della lezione', startTime: _duration).then((value) => {
                   setState(()=>{
@@ -141,11 +149,10 @@ class _AddLesson extends State<AddLesson>
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: ()=>{
-          //TODO: onclick method
           addLesson_click(context, callback, day, modify : modify, oldLesson: oldLesson)
         },
         icon: Icon(Icons.add), label: Text('Aggiungi lezione'),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
+        backgroundColor: accentColor(context),
       )
     );
   }
@@ -159,12 +166,19 @@ TimeOfDay duration;
 String lessonTypeS;
 
 void addLesson_click(BuildContext context, Function() callback, int day, {bool modify = false, Lesson oldLesson})
-{//TODO: clean arguments
+{
   try
   {
     int lessonType = lessonTypeS == 'teoria' ? 0 : 1;
     Lesson toAdd = new Lesson(duration, startTime, lessonType, subject);
-    Status.register.pushLesson(day, toAdd);
+    if(modify)
+    {
+      Status.register.modifyLessonByLesson(day, oldLesson, toAdd);
+    }
+    else
+    {
+      Status.register.pushLesson(day, toAdd);
+    }
     callback();
     Navigator.of(context).pop();
     Status.save();

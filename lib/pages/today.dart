@@ -24,7 +24,16 @@ class _today extends State<Today>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            scale:1.5,
+            alignment: Alignment.bottomLeft,
+            image: AssetImage("assets/images/back.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: ListView(
         children: <Widget>[
           Header('Lezioni di oggi'),
           SizedBox(height: 20,),
@@ -42,11 +51,12 @@ class _today extends State<Today>
           )
         ],
       ),
+      ),
       floatingActionButton: FloatingActionButton.extended(onPressed: ()=>{
         Navigator.of(context).push(SetTimeRoute(()=>{setState(()=>{})}))
       },
         icon: Icon(Icons.toggle_on), label: Text('imposta orario'),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
+        backgroundColor: accentColor(context),
         )
     );
   }
@@ -57,9 +67,12 @@ Column getLessons()
 {
   List<Widget> lista = List<Widget>();
   List<Lesson> sub = Status.register.getCurrentday();
+  DateTime now = new DateTime.now();
+  TimeOfDay current = new TimeOfDay(hour : now.hour, minute : now.minute);
   for(int i = 0; i < sub.length; i++)
   {
-    lista.add(lessonCardInRow(sub[i], i+1));
+    //sub[i] = current lesson
+    lista.add(sub[i].inInterval(current) ? lessonCardCurrentInRow(sub[i], i+1) : lessonCardInRow(sub[i], i+1));    
   }
   if(sub.length == 0)
   {
@@ -90,5 +103,3 @@ Column getNote()
   }
   return Column(children: lista);
 }
-
-

@@ -132,27 +132,20 @@ class _TemplatePage extends State<TemplatePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GridView.count(
-        crossAxisCount: 1,
-        children: [
-          SafeArea(
-            child: Column(children: [
+      body: Column(children: [
               Center(child: Header(WeekDay.daysITA()[day])),
               SizedBox(height: 50),
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: ListView(children: getListLesson(),)
               )
-            ],)
-          )
-        ],
-      ),
+            ],),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: ()=>{
           Navigator.of(context).push(AddLessonRoute(()=>{setState(()=>{})}, day))
         },
         icon: Icon(Icons.add), label: Text('Aggiungi lezione'),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
+        backgroundColor: accentColor(context),
         )
     );
   }

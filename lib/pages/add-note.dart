@@ -8,6 +8,7 @@ import '../widget/text.dart';
 import '../utils/colors.dart';
 import '../utils/status.dart';
 import '../widget/dialog.dart';
+import '../widget/buttonStyle.dart';
 
 class AddNoteRoute extends MaterialPageRoute<void>
 {
@@ -138,7 +139,7 @@ class _AddNote extends State<AddNote>
           addNote_click(context, callback, _subjectSelected, _typeOfNote, modify: modify, oldNote: oldNote)
         },
         icon: Icon(Icons.add), label: Text('Aggiungi nota'),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
+        backgroundColor: accentColor(context),
       )
     );
   }
@@ -351,6 +352,7 @@ class _ForVolatile extends State<ForVolatile>
       title: TextButton.icon(
         icon: Icon(Icons.date_range),
         label: FontText('data di scadenza'),
+        style: textButtonStyle(),
         onPressed: ()=>{
           getDateTime(context, 'seleziona la data dopo la quale la nota verrà cancellata').then((value) => {
             setState(()=>{
@@ -407,6 +409,7 @@ class _ForEvent extends State<ForEvent>
       title: TextButton.icon(
         icon: Icon(Icons.date_range),
         label: FontText('data dell\'evento'),
+        style: textButtonStyle(),
         onPressed: ()=>{
           getDateTime(context, 'seleziona la data dell\'evento').then((value) => {
             setState(()=>{

@@ -69,7 +69,7 @@ class AddSubject extends StatelessWidget
           addSubject_click(context, callback, modify: modify, oldSubject: oldSubject)
         },
         icon: Icon(Icons.add), label: Text('Aggiungi materia'),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
+        backgroundColor: accentColor(context),
       )
     );
   }

@@ -69,7 +69,7 @@ class TabsNoteState extends State<TabsNote>
       child: Scaffold(
         appBar: AppBar(
           title: const Center(child: Text('Note')),
-          backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
+          backgroundColor: accentColor(context),
           // If `TabController controller` is not provided, then a
           // DefaultTabController ancestor must be provided instead.
           // Another way is to use a self-defined controller, c.f. "Bottom tab
@@ -86,7 +86,7 @@ class TabsNoteState extends State<TabsNote>
           Navigator.of(context).push(AddNoteRoute(()=>{setState((){})}))
         },
         icon: Icon(Icons.note_add), label: Text('Aggiungi nota'),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
+        backgroundColor: accentColor(context)
         )
       ),
     );

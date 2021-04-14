@@ -24,6 +24,7 @@ class Register
   List<Note> note;
 
   TimeOfDay defaultDuration;
+  TimeOfDay startTimeDefault;
 
   //ignore
   int _currentDay;
@@ -52,6 +53,7 @@ class Register
     saturday = List<Lesson>();
     sunday = List<Lesson>();
     defaultDuration = new TimeOfDay(hour: 1, minute: 0);
+    startTimeDefault = new TimeOfDay(hour: 8, minute: 0);
     note = new List<Note>();
     subject = new List<Subject>();
   }
@@ -70,6 +72,7 @@ class Register
     subject = json['subject'].length == 0 ? new List<Subject>() : parseListSubject(json['subject']);
     note = json['note'].length == 0 ? new List<Note>() : parseListNote(json['note']);
     defaultDuration = MapTimeOfDay.decode(json['defaultDuration']);
+    startTimeDefault = MapTimeOfDay.decode(json['startTimeDefault']);
   }
 
   List<Lesson> parseListLesson(List<dynamic> list)
@@ -205,8 +208,6 @@ class Register
   void addLesson(List<Lesson> v, Lesson l)
   {
     if(validLesson(v, l))
-    //TODO : validLesson don't work
-    //if(true)
     {
       //lesson can be added
       v.add(l);
@@ -228,7 +229,7 @@ class Register
       if(!good)
         break;
     }
-
+    
     return good;
   }
 
@@ -262,7 +263,7 @@ class Register
     //bool p = oldLesson == monday[0];
     //print(p.toString());
     print(monday.length);
-    print('ID : ${id}');
+    print('ID : $id');
     modifyLessonById(day, l, id);
   }
 
@@ -273,13 +274,13 @@ class Register
     {
       switch(day)
       {
-        case 1 : modifyLesson(monday, l, id); break;
-        case 2 : modifyLesson(tuesday, l, id); break;
-        case 3 : modifyLesson(wednesday, l, id); break;
-        case 4 : modifyLesson(thursday, l, id); break;
-        case 5 : modifyLesson(friday, l, id); break;
-        case 6 : modifyLesson(saturday, l, id); break;
-        case 7 : modifyLesson(sunday, l, id); break;
+        case 1 : modifyLesson(monday, l, id, day); break;
+        case 2 : modifyLesson(tuesday, l, id, day); break;
+        case 3 : modifyLesson(wednesday, l, id, day); break;
+        case 4 : modifyLesson(thursday, l, id, day); break;
+        case 5 : modifyLesson(friday, l, id, day); break;
+        case 6 : modifyLesson(saturday, l, id, day); break;
+        case 7 : modifyLesson(sunday, l, id, day); break;
       }
     }catch(ex)
     {
@@ -288,7 +289,7 @@ class Register
   }
 
   //void ModifyLesson(DayOfWeek day, Lezione lVecchia, Lezione lNuova)
-  void modifyLesson(List<Lesson> v, Lesson l, int id)
+  void modifyLesson(List<Lesson> v, Lesson l, int id, int day)
   {
     try
     {
@@ -302,8 +303,8 @@ class Register
       if(validLesson(temp, l))
       {
         //modify is accepted
-        v.removeAt(id);
-        addLesson(v, l);
+        removeLesson(day, l);
+        pushLesson(day, l);
       }
       else
       {
@@ -319,7 +320,16 @@ class Register
   ///remove a lesson from a day
   void removeLesson(int day, Lesson l)
   {
-    //TODO: Implement remove lesson from a day
+    switch(day)
+      {
+        case 1 : remove(monday, l); break;
+        case 2 : remove(tuesday, l); break;
+        case 3 : remove(wednesday, l); break;
+        case 4 : remove(thursday, l); break;
+        case 5 : remove(friday, l); break;
+        case 6 : remove(saturday, l); break;
+        case 7 : remove(sunday, l); break;
+      }
   }
 
   void remove(List<Lesson> v, Lesson l)
@@ -327,6 +337,24 @@ class Register
     v.remove(l);
   }
 
+  TimeOfDay getNextLessonTime(int day)
+  {
+    try{
+      switch(day)
+    {
+      case 1: return monday[monday.length - 1].endTime;
+      case 2: return tuesday[tuesday.length - 1].endTime;
+      case 3: return wednesday[wednesday.length - 1].endTime;
+      case 4: return thursday[thursday.length - 1].endTime;
+      case 5: return friday[friday.length - 1].endTime;
+      case 6: return saturday[saturday.length - 1].endTime;
+      case 7: return sunday[sunday.length - 1].endTime;
+    }
+    }catch(ex)
+    {
+      return startTimeDefault;
+    }
+  }
   
 
   //MODIFICA MATERIA ========================================================================
@@ -677,6 +705,7 @@ class Register
       'subject' : subject,
       'note': note,
       'defaultDuration' : MapTimeOfDay.map(defaultDuration),
+      'startTimeDefault' : MapTimeOfDay.map(startTimeDefault),
     };
     
   }

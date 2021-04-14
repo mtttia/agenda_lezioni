@@ -1,10 +1,15 @@
 library agenda;
+import 'package:agenda_lezioni/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'pages/today.dart';
 import 'pages/week.dart';
 import 'pages/all-subject.dart';
 import 'pages/note.dart';
 import 'widget/text.dart';
+import 'pages/intro.dart';
+import 'utils/status.dart';
+import 'pages/setting/setting.dart';
+import 'pages/information.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -18,68 +23,59 @@ class _Home
   int _currentTabIndex = 0;
 
   @override
-  Widget build(BuildContext context) {
-    final drawerItems = ListView(
+  Widget build(BuildContext context) {    
+    final drawerItems = Container(
+      color: BackgroundColor,
+      child: ListView(
       children: <Widget>[
-        ListTile(
-          title: Row(children: [
-            Icon(Icons.home),
-            SizedBox(width: 10),
-            Text('Home')
-          ],),
-          onTap: () {
-            setState(() {
-              _currentTabIndex = 0;
-            });
-            Navigator.pop(context);
-          },
+        DrawerItem(
+          Icon(Icons.home, color: PrimaryColor,),
+          'Home',
+          ()=>{setState(() {
+            _currentTabIndex = 0;
+          })}
         ),
-        ListTile(
-          title: Row(children: [
-            Icon(Icons.calendar_view_day),
-            SizedBox(width: 10),
-            Text('Settimana')
-          ],),
-          onTap: () {
-            setState(() {
+        DrawerItem(
+          Icon(Icons.calendar_view_day, color: PrimaryColor,),
+          'Settimana',
+          ()=>{setState(() {
               _currentTabIndex = 1;
-            });
-            Navigator.pop(context);
-          },
+            })}
         ),
-        ListTile(
-          title: Row(children: [
-            Icon(Icons.school),
-            SizedBox(width: 10),
-            Text('Lezioni')
-          ],),
-          onTap: () {
-            setState(() {
+        DrawerItem(
+          Icon(Icons.school, color: PrimaryColor,),
+          'Lezioni',
+          ()=>{setState(() {
               _currentTabIndex = 2;
-            });
-            Navigator.pop(context);
-          },
+            })}
         ),
-        ListTile(
-          title: Row(children: [
-            Icon(Icons.event),
-            SizedBox(width: 10),
-            Text('Note')
-          ],),
-          onTap: () {
-            setState(() {
+        DrawerItem(
+          Icon(Icons.event, color: PrimaryColor,),
+          'Note',
+          ()=>{setState(() {
               _currentTabIndex = 3;
-            });
-            Navigator.pop(context);
-          },
+            })}
+        ),
+        DrawerItem(
+          Icon(Icons.settings, color: PrimaryColor,),
+          'Impostazioni',
+          () => {Navigator.of(context).push(SettingRoute())},
+          pop: false,
+        ),
+        DrawerItem(
+          Icon(Icons.info, color: PrimaryColor,),
+          'Informazioni',
+          () => {Navigator.of(context).push(InformationRoute())},
+          pop: false,
         ),
       ],
+    ),
     );
     final _kTabPages = <Widget>[
       Today(),
       Week(),
       AllSubject(),
-      Notes()
+      Notes(),
     ];
     final _kBottmonNavBarItems = <BottomNavigationBarItem>[
       const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -97,7 +93,8 @@ class _Home
           _currentTabIndex = index;
         });
       },
-    );
+    );    
+    tryTutorial(context);
     return Scaffold(
         appBar: AppBar(
           title: AppBarText('Agenda Lezioni'),
@@ -109,6 +106,22 @@ class _Home
         bottomNavigationBar: bottomNavBar,
     );
   }
+}
+
+Future<void> tryTutorial(BuildContext context)
+{
+  Future.delayed(Duration(seconds: 2),
+  ()=> openTutorial(context),
+  );
+  
+}
+
+void openTutorial(BuildContext context)
+{
+  if(Status.firstOpen){
+    Navigator.of(context).push(IntroRoute());
+    Status.firstOpen = false;
+  }    
 }
 
 
@@ -127,4 +140,61 @@ class _NewPage extends MaterialPageRoute<void> {
       ),
     );
   });
+}
+
+
+class DrawerItem extends StatelessWidget
+{
+  DrawerItem(this.icon, this.text, this.fun, {this.selected = false, this.pop = true}):super();
+  Icon icon;
+  String text;
+  Function() fun;
+  bool selected;
+  bool pop;
+
+  @override
+  Widget build(BuildContext context) {
+  
+
+    return Column(
+      children: [
+        ListTile(
+          focusColor: SecondaryColor,
+          hoverColor: SecondaryColor,
+          selected: selected,
+          enabled: true,
+          title: Row(children: [
+            icon,
+            SizedBox(width: 10),
+            FontText(this.text, color: PrimaryColor, fontSize: 16,),
+          ],),
+          onTap: () {
+            this.fun();
+            if(pop)
+            {
+              Navigator.pop(context);
+            }
+          },
+        ),
+        //Divider(),
+      ],
+    );
+
+  }
+  
+}
+
+class Divider extends StatelessWidget
+{
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+      child: SizedBox(
+        height: 1,
+        child: Container(color: PrimaryColor,),
+      ),
+    );
+  }
+  
 }

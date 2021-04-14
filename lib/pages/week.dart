@@ -50,7 +50,7 @@ class Week extends StatelessWidget {
                   label: Text("OGGI"),
                   icon : Icon(Icons.calendar_today),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900),
+                    backgroundColor: MaterialStateProperty.all<Color>(accentColor(context)),
                   ),
                   )
                 )              

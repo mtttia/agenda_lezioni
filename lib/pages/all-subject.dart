@@ -55,7 +55,7 @@ class _SubjectListState extends State<SubjectList> {
           Navigator.of(context).push(AddSubjectRoute(()=>{setState(()=>{})}))
         },
         icon: Icon(Icons.add), label: Text('Aggiungi lezione'),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
+        backgroundColor: accentColor(context),
         )
     );
   }

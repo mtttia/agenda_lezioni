@@ -5,18 +5,21 @@ import '../utils/colors.dart';
 
 class FontText extends StatelessWidget
 {
-  FontText(this.text, {this.fontFamily : 'OpenSans', this.textAlign = TextAlign.left});
+  FontText(this.text, {this.fontFamily : 'OpenSans', this.textAlign = TextAlign.left, this.color, this.fontSize});
   String text;
   String fontFamily;
   TextAlign textAlign;
-  
+  Color color;
+  double fontSize;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       style: TextStyle(
-        fontFamily: this.fontFamily
+        fontFamily: this.fontFamily,
+        color: this.color,
+        fontSize: fontSize,
       ),
       textAlign: this.textAlign,
     );
@@ -33,15 +36,33 @@ class Header extends StatelessWidget
     return Column(
       children: [
         SizedBox(height: 25),
-        Text(
-          this.text,
-          style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AgendaBlue900,
-            fontFamily: 'Comfortaa',
-            fontSize: 30.0,
+        Container(          
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),              
+              color: accentColor(context),
+              border: Border.all(
+                color: BackgroundColor,
+                width: 1.5,
+              ),
+            ),
+          child: Padding(
+          padding: EdgeInsets.fromLTRB(20, 5, 20, 5),         
+          
+          child: Container(
+            
+            
+            child: Text(
+              this.text,
+              style: TextStyle(
+                color: BackgroundColor,
+                fontFamily: 'Comfortaa',
+                fontSize: 14.0,
+              ),
+            ),
           ),
-          textAlign: TextAlign.center,
         )
+        )
+        
       ],
     );
   }  
@@ -64,9 +85,25 @@ class Subtitle extends StatelessWidget
         ), textAlign: TextAlign.center,),
       ],
     );
+  }  
+}
+
+class GreyText extends StatelessWidget{
+
+  GreyText(this.text);
+  String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: Colors.grey[600],
+        fontFamily: 'OpenSans',
+      ),
+    );
   }
 
-  
 }
 
 class IconText extends StatelessWidget

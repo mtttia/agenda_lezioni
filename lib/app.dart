@@ -8,13 +8,13 @@ class App extends StatelessWidget
 {
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
-      title: 'Agenda lezioni',
+      title: 'Less on',
       home : Home(),
       theme: _agendaTheme,
       darkTheme: ThemeData.dark(),
       //darkTheme: _buildAgendaDarkTheme(),
-
     );
   }
 
@@ -26,20 +26,20 @@ final ThemeData _agendaTheme = _buildAgendaTheme();
 ThemeData _buildAgendaTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
-    accentColor: AgendaBlue300,
-    primaryColor: AgendaBlue900,
+    accentColor: SecondaryColor,
+    primaryColor: PrimaryColor,
     buttonTheme: base.buttonTheme.copyWith(
-      buttonColor: AgendaBlue900,
+      buttonColor: PrimaryColor,
       colorScheme: base.colorScheme.copyWith(
-        secondary: AgendaBlue300,
+        secondary: SecondaryColor,
       ),
     ),
     buttonBarTheme: base.buttonBarTheme.copyWith(
       buttonTextTheme: ButtonTextTheme.accent,
     ),
-    scaffoldBackgroundColor: AgendaBackgroundWhite,
-    cardColor: AgendaCeleste,
-    textSelectionColor: AgendaBlue100,
+    scaffoldBackgroundColor: BackgroundColor,
+    cardColor: GreyColor,
+    textSelectionColor: GreyLightColor,
     errorColor: AgendaErrorRed,
     
     //Add the text themes

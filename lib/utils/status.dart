@@ -8,7 +8,7 @@ import 'package:agenda_lezioni/utils/fileManager.dart';
 class Status
 {
   static Register register;
-  static bool firstOpen;
+  static bool firstOpen; 
   
   static void initalize()
   {
@@ -17,6 +17,7 @@ class Status
     register = new Register(today.weekday);
     //TODO : delete the comment
     //FileManager.save(jsonEncode(register.toJson()));
+    Status.save();
   }
 
   static initializeFromJson(String json)
@@ -37,5 +38,7 @@ class Status
   {
     FileManager.save(jsonEncode(register.toJson()));
   }
+
+  
 
 }

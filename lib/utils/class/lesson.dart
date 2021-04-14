@@ -74,6 +74,10 @@ class Lesson extends Comparable
     assert(startTime != null, "startTime can't be null");
     assert(lessonType != null, "lessonType can't be null");
     assert(subject != null, "subject can't be null");
+    if(Comparer.comepareTimeOfDay(startTime, this.endTime) > 0)
+    {
+      throw new Exception('lesson must not go beyond 24 hours');
+    }
   }
   Lesson.fromJson(Map<String, dynamic> json)
   {
@@ -114,6 +118,11 @@ class Lesson extends Comparable
       "lessonType" : lessonType,
       "subject" : subject.toJson()
     };
+  }
+
+  bool inInterval(TimeOfDay time){
+    //time > startTime $$ endTime > time
+    return Comparer.comepareTimeOfDay(time, this.startTime) >= 0 && Comparer.comepareTimeOfDay(this.endTime, time) > 0;
   }
 
   @override

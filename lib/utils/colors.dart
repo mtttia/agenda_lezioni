@@ -32,3 +32,18 @@ const AgendaBackgroundWhite = Colors.white;
 const AgendaYellow = Color.fromRGBO(233, 196, 106, 1);
 
 const AgendaCardLite = Color.fromRGBO(241, 246, 249, 0.5);
+
+//NEW PALETTE
+const PrimaryColor = Color(0xFF677250);
+const SecondaryColor = Color(0xFF9EA482);
+const GreyColor = Color(0xFFCDC5B2);
+const GreyLightColor = Color(0xFFEDE6DE);
+const BackgroundColor = Color(0xFFF2F2F2);
+const AccentColor = PrimaryColor;
+
+
+//FOR DARKMODE
+
+Color accentColor(BuildContext context){
+  return Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AccentColor;
+}

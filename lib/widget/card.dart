@@ -51,30 +51,50 @@ class LessonCard extends StatelessWidget
   
 }
 
-Card lessonCardCurrent(Lesson l, int i)
+Widget lessonCardCurrent(Lesson l, int i)
 {
-  return Card(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20.0),
-    ),
-    elevation: 5,
-    //shadowColor: AgendaBlue900,
-    color: AgendaBlue300,
-    clipBehavior: Clip.antiAlias,
-    child: Column(
-      children: [
-        ListTile(
-          leading: Text(i.toString()),
-          title: Text(l.subject.name),
-          subtitle: Text(
-            l.interval,
-            style: TextStyle(color: Colors.black.withOpacity(0.6)),
-          ),
-        ),
-      ],
-    ),
-  );
+  return LessonCardCurrent(l, i);
 }
+
+class LessonCardCurrent extends StatelessWidget
+{
+  LessonCardCurrent(this.l, this.i);
+  Lesson l;
+  int i;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      elevation: 5,
+      //shadowColor: AgendaBlue900,
+      color: SecondaryColor,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            leading: FontText(i.toString()),
+            title: FontText(l.subject.name),
+            subtitle: Text(
+              l.interval,
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+            trailing: IconButton(
+              onPressed: ()=> {Navigator.of(context).push(SubjectPageRoute(l.subject))},
+              icon: Icon(Icons.trending_up),
+            ),
+          ),
+        ],
+      ),
+    ),
+    );
+  }
+  
+}
+
 
 ///card center in 80% space
 Widget lessonCardInRow(Lesson l, int i)
