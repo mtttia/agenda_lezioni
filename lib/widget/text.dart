@@ -90,19 +90,22 @@ class Subtitle extends StatelessWidget
 
 class GreyText extends StatelessWidget{
 
-  GreyText(this.text);
+
+  GreyText(this.text, {this.fontFamily : 'OpenSans', this.textAlign = TextAlign.left, this.color, this.fontSize})
+  {
+    if(color == null)
+      color = Colors.grey[600];
+  }
   String text;
+  String fontFamily;
+  TextAlign textAlign;
+  Color color;
+  double fontSize;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: Colors.grey[600],
-        fontFamily: 'OpenSans',
-      ),
-    );
-  }
+    return FontText(text, fontFamily: fontFamily, textAlign: textAlign, color: color, fontSize: fontSize,);
+  }  
 
 }
 

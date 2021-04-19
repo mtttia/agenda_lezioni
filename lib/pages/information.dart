@@ -35,9 +35,8 @@ class Information extends StatelessWidget
             iconButton: Icon(Icons.lightbulb),
             textButton: 'Vai al tutorial',
             callback: ()=>{
-              //TODO : go to https://agenda-lezioni.netlify.app/tutorial.html
-              //TODO : remember to change domain
-              openLink("https://agenda-lezioni.netlify.app/tutorial.html")
+              //go to https://less-on.netlify.app/tutorial.html
+              openLink("https://less-on.netlify.app/tutorial.html")
             },
           ),
           Divider(),
@@ -47,9 +46,8 @@ class Information extends StatelessWidget
             iconButton: Icon(Icons.language),
             textButton: 'Vai al sito web',
             callback: ()=>{
-              //TODO : go to https://agenda-lezioni.netlify.app/
-              //TODO : remember to change domain
-              openLink("https://agenda-lezioni.netlify.app/")
+              //go to https://less-on.netlify.app/
+              openLink("https://less-on.netlify.app/")
             },
           ),
           Divider(),

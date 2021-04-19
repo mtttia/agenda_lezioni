@@ -160,19 +160,32 @@ class DayNote extends Note
   }
 }
 
-class VolatilDayNote extends VolatileNote
+class VolatilDayNote extends Note
 {
+  DateTime deadline;
   int weekDay;
   static const String type = "VolatilDay";
 
-  VolatilDayNote(String n, String t, Subject s, DateTime d, int day) : super(n, t, s, d)
+  VolatilDayNote(String n, String t, Subject s, DateTime d, int day) : super(n, t, s)
   {
     weekDay = day;
+    deadline = d;
   }
 
   VolatilDayNote.fromJson(Map<String, dynamic> json) : super.fromJson(json)
   {
     weekDay = json['weekDay'];
+    deadline = getDatetime(json['deadline']);
+  }
+  
+  bool valid()
+  {
+    DateTime now = new DateTime.now();
+    if(deadline.compareTo(now) < 0)
+    {
+      return false;
+    }
+    return true;
   }
 
 
@@ -182,7 +195,7 @@ class VolatilDayNote extends VolatileNote
       "type" : type,
       "name" : name,
       "text" : text,
-      "deadline" : deadline,
+      "deadline" : getMapFromDatetime(deadline),
       "weekDay" : weekDay,
       "subject" : subject
     };

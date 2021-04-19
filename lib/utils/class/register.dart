@@ -87,7 +87,6 @@ class Register
 
   List<Note> parseListNote(List<dynamic> list)
   {
-    //TODO : implement parseListNote
     List<Note> ret = new List<Note>();
     for(dynamic d in list)
     {

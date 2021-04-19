@@ -161,8 +161,7 @@ void addNote_click(BuildContext context, Function() callback, Subject s, String 
   {
     String name = _nameController.text;
     String note = _noteController.text;
-    _nameController.text = "";
-    _noteController.text = "";
+    
 
     //see what type of note is the note to add
     Note toAdd;
@@ -224,6 +223,8 @@ void addNote_click(BuildContext context, Function() callback, Subject s, String 
       Status.register.modifyNote(oldNote, toAdd);
     else
       Status.register.addNote(toAdd);    
+    _nameController.text = "";
+    _noteController.text = "";
     Navigator.of(context).pop();
     callback();
     Status.save();

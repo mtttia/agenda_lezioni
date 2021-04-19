@@ -129,6 +129,11 @@ class _ListFixedNoteState extends State<ListFixedNote>
         SafeArea(
         child: Column(children: [
         Center(child: Header('Fisse')),
+        SizedBox(height: 25,),
+        Padding(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: GreyText('note che rimangono in evidenza finchè non vengono cancellate', textAlign: TextAlign.center,),
+        ),
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
@@ -166,7 +171,6 @@ class _ListFixedNoteState extends State<ListFixedNote>
 
   void modifyNote(Note n)
   {
-    //TODO : modify the note
     Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
     setState(() {});
   }
@@ -234,10 +238,15 @@ class _ListDayNoteState extends State<ListDayNote>
         SafeArea(
         child: Column(children: [
         Center(child: Header('Giorno')),
+        SizedBox(height: 25,),
+        Padding(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: GreyText('note che vengono messe in evidenza solo un determinato giorno della settimana', textAlign: TextAlign.center,),
+        ),
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView(children: getListNote(fixedNoteCard)),
+          child: ListView(children: getListNote(dayNoteCard)),
         )
       ],),
         )
@@ -270,7 +279,6 @@ class _ListDayNoteState extends State<ListDayNote>
 
   void modifyNote(Note n)
   {
-    //TODO : modify the note
     Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
     setState(() {});
   }
@@ -335,11 +343,16 @@ class _ListVolatileNoteState extends State<ListVolatileNote>
       children: [
         SafeArea(
         child: Column(children: [
-        Center(child: Header('Volatili')),
+        Center(child: Header('Volatili')),        
+        SizedBox(height: 25,),
+        Padding(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: GreyText('note che rimangono in evidenza fino ad una certa data dopo la quale vengono automaticamente cancellate', textAlign: TextAlign.center,),
+        ),
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView(children: getListNote(fixedNoteCard)),
+          child: ListView(children: getListNote(volatileNoteCard)),
         )
       ],),
         )
@@ -375,7 +388,6 @@ class _ListVolatileNoteState extends State<ListVolatileNote>
 
   void modifyNote(Note n)
   {
-    //TODO : modify the note
     Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
     setState(() {});
   }
@@ -427,7 +439,7 @@ class ListVolatilDayNote extends StatefulWidget
 
 class _ListVolatilDayNoteState extends State<ListVolatilDayNote>
 {
-  List<VolatileNote> _list = Status.register.volatilDayNote;
+  List<VolatilDayNote> _list = Status.register.volatilDayNote;
   VolatileNote _current = null;
 
   @override
@@ -440,10 +452,15 @@ class _ListVolatilDayNoteState extends State<ListVolatilDayNote>
         SafeArea(
         child: Column(children: [
         Center(child: Header('Volatili e giorno')),
+        SizedBox(height: 25,),        
+        Padding(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: GreyText('note che rimangono in evidenza un determinato giorno e fino ad una certa data', textAlign: TextAlign.center,),
+        ),
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView(children: getListNote(fixedNoteCard)),
+          child: ListView(children: getListNote(volatilDayNoteCard)),
         )
       ],),
         )
@@ -478,7 +495,6 @@ class _ListVolatilDayNoteState extends State<ListVolatilDayNote>
 
   void modifyNote(Note n)
   {
-    //TODO : modify the note
     Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
     setState(() {});
   }
@@ -543,11 +559,16 @@ class _ListEventState extends State<ListEvent>
       children: [
         SafeArea(
         child: Column(children: [
-        Center(child: Header('Evento')),
+        Center(child: Header('Eventi')),
+        SizedBox(height: 50,),
+        Padding(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: GreyText('note vengono messe in evidenza solo in una determianta data', textAlign: TextAlign.center,),
+        ),
         SizedBox(height: 50,),
         Expanded(
           flex: 1,
-          child: ListView(children: getListNote(fixedNoteCard)),
+          child: ListView(children: getListNote(eventCard)),
         )
       ],),
         )
@@ -583,7 +604,6 @@ class _ListEventState extends State<ListEvent>
 
   void modifyNote(Note n)
   {
-    //TODO : modify the note
     Navigator.of(context).push(AddNoteRoute(()=>{setState(()=>{})}, modify: true, oldNote: n));
     setState(() {});
   }

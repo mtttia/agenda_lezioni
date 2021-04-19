@@ -248,22 +248,99 @@ Widget fixedNoteCard(Note n)
 
 Widget dayNoteCard(Note n)
 {
-  return noteCardNormal(n);
+  if(n is DayNote)
+  {
+    DayNote note = n;
+    return Card(
+    //shadowColor: AgendaBlue400,
+    clipBehavior: Clip.antiAlias,
+    child: Column(
+      children: [
+        ListTile(
+          leading: Text(n.subject.name),
+          title: Text(n.name),
+          subtitle: Text(
+            n.text + " - giorno : " + note.weekDay.toString(),
+            style: TextStyle(color: Colors.black.withOpacity(0.6)),
+          ),
+        ),
+      ],
+    ),
+  );
+  }
+  
 }
 
 Widget volatileNoteCard(Note n)
 {
-  return noteCardNormal(n);
+  if(n is VolatileNote)
+  {
+    VolatileNote note = n;
+    return Card(
+      //shadowColor: AgendaBlue400,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            leading: Text(n.subject.name),
+            title: Text(n.name),
+            subtitle: Text(
+              n.text + " - scadenza : " + note.deadline.day.toString() + "/" + note.deadline.month.toString() + '/' + note.deadline.year.toString(),
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 Widget volatilDayNoteCard(Note n)
 {
-  return noteCardNormal(n);
+  if(n is VolatilDayNote)
+  {
+    VolatilDayNote note = n;
+    return Card(
+      //shadowColor: AgendaBlue400,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            leading: Text(n.subject.name),
+            title: Text(n.name),
+            subtitle: Text(
+              n.text + " - giorno : " + note.weekDay.toString() +" - scadenza : " + note.deadline.day.toString() + "/" + note.deadline.month.toString() + '/' + note.deadline.year.toString(),
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 Widget eventCard(Note n)
 {
-  return noteCardNormal(n);
+  if(n is Event)
+  {
+    Event note = n;
+    return Card(
+      //shadowColor: AgendaBlue400,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            leading: Text(n.subject.name),
+            title: Text(n.name),
+            subtitle: Text(
+              n.text + " - scadenza : " + note.day.day.toString() + "/" + note.day.month.toString() + '/' + note.day.year.toString(),
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 Widget subjectCardInRow(Subject s)

@@ -15,8 +15,6 @@ class Status
     firstOpen = true;
     DateTime today = new DateTime.now();
     register = new Register(today.weekday);
-    //TODO : delete the comment
-    //FileManager.save(jsonEncode(register.toJson()));
     Status.save();
   }
 
@@ -24,7 +22,7 @@ class Status
   {
     try
     {
-      firstOpen = false;
+      firstOpen = false; 
       Map<String, dynamic> map = jsonDecode(json);
       DateTime today = new DateTime.now();
       register = new Register.fromJson(map, today.weekday);
