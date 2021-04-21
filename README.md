@@ -8,13 +8,13 @@ Download me https://github.com/mtttia/agenda_lezioni/releases/download/1.0.0/app
 
 # Resorces
 
-This application have got a website with some resources (The website hasn't been updated yet, but it will soon be).
+This application have got a website with someresources.
 (The website language is Italian)
 Resource list :
-  - Home page for download : https://less-on.netlify.app/      (NOT UPDATED)
-  - Fast tutorial : https://less-on.netlify.app/tutorial.html  (NOT UPDATED)
-  - Who we are : https://less-on.netlify.app/chi-siamo.html    (NOT UPDATED)
-  - Screenshot : https://less-on.netlify.app/screenshot.html   (NOT EXIST YET)
+  - Home page for download : https://less-on.netlify.app/     
+  - Fast tutorial : https://less-on.netlify.app/tutorial.html 
+  - Who we are : https://less-on.netlify.app/chi-siamo.html   
+  - Screenshot : https://less-on.netlify.app/screenshot.html  
 
 The app is under GPL 3.0 LICENSE (see LICENSE file)
 
