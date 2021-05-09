@@ -39,11 +39,17 @@ const SecondaryColor = Color(0xFF9EA482);
 const GreyColor = Color(0xFFCDC5B2);
 const GreyLightColor = Color(0xFFEDE6DE);
 const BackgroundColor = Color(0xFFF2F2F2);
+const BackgroundDarkColor = Color(0xff2b2b2b);
 const AccentColor = PrimaryColor;
 
 
 //FOR DARKMODE
 
 Color accentColor(BuildContext context){
-  return Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AccentColor;
+  //return Theme.of(context).brightness == Brightness.dark ? Theme.of(context).primaryColorLight : AccentColor;
+  return AccentColor;
+}
+
+Color backColor(BuildContext context){
+  return Theme.of(context).brightness == Brightness.dark ? BackgroundDarkColor : BackgroundColor;
 }

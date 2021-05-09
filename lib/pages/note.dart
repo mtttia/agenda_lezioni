@@ -560,7 +560,7 @@ class _ListEventState extends State<ListEvent>
         SafeArea(
         child: Column(children: [
         Center(child: Header('Eventi')),
-        SizedBox(height: 50,),
+        SizedBox(height: 25,),
         Padding(
           padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
           child: GreyText('note vengono messe in evidenza solo in una determianta data', textAlign: TextAlign.center,),

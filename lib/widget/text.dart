@@ -41,7 +41,7 @@ class Header extends StatelessWidget
               borderRadius: BorderRadius.circular(50),              
               color: accentColor(context),
               border: Border.all(
-                color: BackgroundColor,
+                color: backColor(context),
                 width: 1.5,
               ),
             ),

@@ -13,8 +13,8 @@ class App extends StatelessWidget
       title: 'Less on',
       home : Home(),
       theme: _agendaTheme,
-      darkTheme: ThemeData.dark(),
-      //darkTheme: _buildAgendaDarkTheme(),
+      //darkTheme: ThemeData.dark(),
+      darkTheme: _agendaThemeDark,
     );
   }
 
@@ -73,27 +73,29 @@ TextTheme _agendaTextTheme(TextTheme base) {
 }
 
 
-ThemeData _buildAgendaDarkTheme() {
+final ThemeData _agendaThemeDark = _buildAgendaThemeDark();
+
+ThemeData _buildAgendaThemeDark() {
   final ThemeData base = ThemeData.dark();
   return base.copyWith(
-    accentColor: AgendaBlue400,
-    primaryColor: base.bottomAppBarColor,
+    accentColor: SecondaryColor,
+    primaryColor: PrimaryColor,
     buttonTheme: base.buttonTheme.copyWith(
-      buttonColor: AgendaBlue900,
+      buttonColor: PrimaryColor,
       colorScheme: base.colorScheme.copyWith(
-        secondary: AgendaBlue300,
+        secondary: SecondaryColor,
       ),
     ),
     buttonBarTheme: base.buttonBarTheme.copyWith(
       buttonTextTheme: ButtonTextTheme.accent,
     ),
-    scaffoldBackgroundColor: AgendaBlue900,
-    cardColor: AgendaGreen,
-    textSelectionColor: AgendaBlue100,
+    scaffoldBackgroundColor: BackgroundDarkColor,
+    cardColor: AccentColor,
+    textSelectionColor: GreyLightColor,
     errorColor: AgendaErrorRed,
-    
+
     //Add the text themes
-    
+
 
     textTheme: _agendaTextTheme(base.textTheme),
     primaryTextTheme: _agendaTextTheme(base.primaryTextTheme),
@@ -115,6 +117,7 @@ ThemeData _buildAgendaDarkTheme() {
 
   );
 }
+
 /*
 ThemeData _buildAgendaDarkTheme()
 {
