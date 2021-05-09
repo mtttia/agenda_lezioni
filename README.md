@@ -4,7 +4,7 @@ Your day, organized, within reach of the phone.
 
 Powered for android.
 
-Download me https://github.com/mtttia/agenda_lezioni/releases/download/1.0.0/app-release.apk.
+Download me https://github.com/mtttia/agenda_lezioni/releases/download/1.1.0/less-on.apk.
 
 # Resorces
 
