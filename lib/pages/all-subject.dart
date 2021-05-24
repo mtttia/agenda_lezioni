@@ -49,7 +49,10 @@ class _SubjectListState extends State<SubjectList> {
   Widget build(BuildContext context) {
     print(Status.register.subject.length);
     return Scaffold(
-      body: ListView(children: getListSubject()),
+      body: Padding(
+        child: ListView(children: getListSubject()),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: ()=>{
           Navigator.of(context).push(AddSubjectRoute(()=>{setState(()=>{})}))

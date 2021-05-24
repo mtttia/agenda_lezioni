@@ -10,27 +10,30 @@ import '../utils/status.dart';
 import '../widget/dialog.dart';
 import '../widget/buttonStyle.dart';
 
-class AddNoteRoute extends MaterialPageRoute<void>
-{
-  AddNoteRoute(Function() callback, {bool modify = false, Note oldNote}) : super(builder: (BuildContext context)
-  {
-    return AddNote(callback, modify : modify, oldNote: oldNote,);
-  });
+class AddNoteRoute extends MaterialPageRoute<void> {
+  AddNoteRoute(Function() callback, {bool modify = false, Note oldNote})
+      : super(builder: (BuildContext context) {
+          return AddNote(
+            callback,
+            modify: modify,
+            oldNote: oldNote,
+          );
+        });
 }
 
-class AddNote extends StatefulWidget
-{
+class AddNote extends StatefulWidget {
   AddNote(this.callback, {this.modify = false, this.oldNote});
   Function() callback;
   bool modify;
   Note oldNote;
 
   @override
-  _AddNote createState() => _AddNote(callback, modify: modify, oldNote: oldNote);
+  _AddNote createState() =>
+      _AddNote(callback, modify: modify, oldNote: oldNote);
 }
 
-class _AddNote extends State<AddNote>
-{//TODO:implement the change of the interface and the interfaces
+class _AddNote extends State<AddNote> {
+  //TODO:implement the change of the interface and the interfaces
   //the interface that will be show when I change the type of note
   _AddNote(this.callback, {this.modify = false, this.oldNote});
   Function() callback;
@@ -41,9 +44,8 @@ class _AddNote extends State<AddNote>
   Subject _subjectSelected;
   String _typeOfNote;
 
-
   //list of type of note
-  static const noteType= <String>[
+  static const noteType = <String>[
     'generica',
     'giorno',
     'volatile',
@@ -51,18 +53,18 @@ class _AddNote extends State<AddNote>
     'evento',
   ];
 
-  final List<DropdownMenuItem<String>> _dropdownNoteType = noteType.map(
-    (String value) => DropdownMenuItem<String>(
-      value: value,
-      child: Text(value),
-    ),
-  ).toList();
-
+  final List<DropdownMenuItem<String>> _dropdownNoteType = noteType
+      .map(
+        (String value) => DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        ),
+      )
+      .toList();
 
   @override
   Widget build(BuildContext context) {
-    if(modify)
-    {
+    if (modify) {
       _nameController.text = oldNote.name;
       _noteController.text = oldNote.text;
       _subjectSelected = oldNote.subject;
@@ -70,82 +72,75 @@ class _AddNote extends State<AddNote>
       _interface = getWidgetForTypeOfNote(_typeOfNote);
     }
     return Scaffold(
-      appBar: AppBar(
-        title: AppBarText('Aggiungi nota'),
-        leading: IconButton(
-          icon: const Icon(Icons.west),
-          onPressed: ()=>Navigator.of(context).pop(),
-        )
-      ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left:15.0, top:30.0, right:15.0),
-            child: Column(
-              children: [
-                FontText('Per craere una nota è necessario specificare il tipo di nota, il nome, il testo, ed ulteriori eventuali chiarimenti in base al tipo di nota'),
-                SizedBox(height: 30),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    labelText: 'nome nota',
-                  ),
-                ),
-                SizedBox(height: 30),
-                TextField(
-                  controller: _noteController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    labelText: 'testo della nota',
-                  ),
-                ),
-                SizedBox(height: 30),
-                ListTile(
-                  title: FontText('materia di riferimento'),
-                  trailing: DropdownButton(
-                    items: getDropdownMenuItems(),
-                    value: _subjectSelected,
-                    onChanged: (Subject value)=>{
-                      setState(()=>{
-                        _subjectSelected = value
-                      })
-                    }
-                  ),
-                ),
-                SizedBox(height: 30),
-                ListTile(
-                  title: FontText('tipo di nota'),
-                  trailing: DropdownButton(
-                    items: _dropdownNoteType,
-                    value: _typeOfNote,
-                    onChanged: (String value)=>{
-                      setState(()=>{
-                        _typeOfNote = value,
-                        _interface = getWidgetForTypeOfNote(value)
-                      })
-                    }
-                  ),
-                ),
-                _interface,
-              ],
-            )
-          ),
-          
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: ()=>{
-          addNote_click(context, callback, _subjectSelected, _typeOfNote, modify: modify, oldNote: oldNote)
-        },
-        icon: Icon(Icons.add), label: Text('Aggiungi nota'),
-        backgroundColor: accentColor(context),
-      )
-    );
+        appBar: AppBar(
+            title: AppBarText('Aggiungi nota'),
+            leading: IconButton(
+              icon: const Icon(Icons.west),
+              onPressed: () => Navigator.of(context).pop(),
+            )),
+        body: ListView(
+          children: [
+            Padding(
+                padding: EdgeInsets.only(left: 15.0, top: 30.0, right: 15.0),
+                child: Column(
+                  children: [
+                    FontText(
+                        'Per craere una nota è necessario specificare il tipo di nota, il nome, il testo, ed ulteriori eventuali chiarimenti in base al tipo di nota'),
+                    SizedBox(height: 30),
+                    TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        labelText: 'nome nota',
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    TextField(
+                      controller: _noteController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        labelText: 'testo della nota',
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    ListTile(
+                      title: FontText('materia di riferimento'),
+                      trailing: DropdownButton(
+                          items: getDropdownMenuItems(),
+                          value: _subjectSelected,
+                          onChanged: (Subject value) => {
+                                setState(() => {_subjectSelected = value})
+                              }),
+                    ),
+                    SizedBox(height: 30),
+                    ListTile(
+                      title: FontText('tipo di nota'),
+                      trailing: DropdownButton(
+                          items: _dropdownNoteType,
+                          value: _typeOfNote,
+                          onChanged: (String value) => {
+                                setState(() => {
+                                      _typeOfNote = value,
+                                      _interface = getWidgetForTypeOfNote(value)
+                                    })
+                              }),
+                    ),
+                    _interface,
+                  ],
+                )),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => {
+            addNote_click(context, callback, _subjectSelected, _typeOfNote,
+                modify: modify, oldNote: oldNote)
+          },
+          icon: Icon(Icons.add),
+          label: Text('Aggiungi nota'),
+          backgroundColor: accentColor(context),
+        ));
   }
-  
 }
-
 
 final _nameController = TextEditingController();
 final _noteController = TextEditingController();
@@ -155,102 +150,89 @@ int daySelected = 0;
 DateTime volatile = null;
 DateTime event = null;
 
-void addNote_click(BuildContext context, Function() callback, Subject s, String noteType, {bool modify = false, Note oldNote})
-{
-  try
-  {
+void addNote_click(
+    BuildContext context, Function() callback, Subject s, String noteType,
+    {bool modify = false, Note oldNote}) {
+  try {
     String name = _nameController.text;
     String note = _noteController.text;
-    
 
     //see what type of note is the note to add
     Note toAdd;
-    print('note type : '+noteType);
-    switch(noteType)
-    {
-      case 'generica': 
+    print('note type : ' + noteType); //TODO : delete me
+    switch (noteType) {
+      case 'generica':
         //add a fixed note
         toAdd = new FixedNote(name, note, s);
         break;
-      case 'giorno': 
+      case 'giorno':
         //add a fixed note
-        if(daySelected <= 0 && daySelected > 7)
-        {
+        if (daySelected <= 0 && daySelected > 7) {
           //if daySelected isn't correct, throw an exception
           throw new Exception('nessun giorno selezionato');
         }
         toAdd = new DayNote(name, note, s, daySelected);
         break;
-      case 'volatile': 
+      case 'volatile':
         //add a volatile note
-        if(volatile == null)
-        {
+        if (volatile == null) {
           //volatile isn't initailized
           throw new Exception('data di scadenza non inizializzata');
         }
         toAdd = new VolatileNote(name, note, s, volatile);
         break;
-      case 'volatile e giorno': 
+      case 'volatile e giorno':
         //add a VolatileDay note
-        if(daySelected <= 0 && daySelected > 7)
-        {
+        if (daySelected <= 0 && daySelected > 7) {
           //if daySelected isn't correct, throw an exception
           throw new Exception('nessun giorno selezionato');
         }
-        if(volatile == null)
-        {
+        if (volatile == null) {
           //volatile isn't initailized
           throw new Exception('data di scadenza non inizializzata');
         }
         toAdd = new VolatilDayNote(name, note, s, volatile, daySelected);
         break;
-      case 'evento': 
+      case 'evento':
         //add a event
-        if(event == null)
-        {
+        if (event == null) {
           //event isn't initailized
           throw new Exception('date dell\'evento non inizializzata');
         }
         toAdd = new Event(name, note, s, event);
+        Event temp = toAdd;
+        print("giorno della nota" + temp.day.toString()); //TODO : delete me
         break;
     }
 
-    if(toAdd == null)
-    {
+    if (toAdd == null) {
       throw new Exception('internal error');
     }
-    if(modify)
+    if (modify)
       Status.register.modifyNote(oldNote, toAdd);
     else
-      Status.register.addNote(toAdd);    
+      Status.register.addNote(toAdd);
     _nameController.text = "";
     _noteController.text = "";
     Navigator.of(context).pop();
     callback();
     Status.save();
-  }catch(ex)
-  {
+  } catch (ex) {
     dialog(context, 'Attenzione', ex.toString());
   }
 }
 
-
-
-List<String> getMenuItems()
-{
-  List<String> list = new List<String>();
-  for(Subject s in Status.register.subject)
-  {
+List<String> getMenuItems() {
+  List<String> list = [];
+  for (Subject s in Status.register.subject) {
     list.add(s.name);
   }
   return list;
 }
 
-List<DropdownMenuItem<Subject>> getDropdownMenuItems()
-{
+List<DropdownMenuItem<Subject>> getDropdownMenuItems() {
   List<DropdownMenuItem<Subject>> list = new List<DropdownMenuItem<Subject>>();
-  for(Subject s in Status.register.subject)
-  {
+  for (Subject s in Status.register.subject) {
     list.add(DropdownMenuItem<Subject>(
       child: Text(s.name),
       value: s,
@@ -259,38 +241,36 @@ List<DropdownMenuItem<Subject>> getDropdownMenuItems()
   return list;
 }
 
-Widget getWidgetForTypeOfNote(String type)
-{
-  switch(type)
-  {
-    case 'generica' : return forGeneric();
-    case 'giorno' : return forDay();
-    case 'volatile' : return forVolatile();
-    case 'volatile e giorno' : return forVolatilDay();
-    case 'evento' : return forEvent();
+Widget getWidgetForTypeOfNote(String type) {
+  switch (type) {
+    case 'generica':
+      return forGeneric();
+    case 'giorno':
+      return forDay();
+    case 'volatile':
+      return forVolatile();
+    case 'volatile e giorno':
+      return forVolatilDay();
+    case 'evento':
+      return forEvent();
   }
   throw new Exception('internal error');
 }
 
-Widget forGeneric()
-{
+Widget forGeneric() {
   return Container();
 }
 
-Widget forDay()
-{
+Widget forDay() {
   return ForDay();
 }
 
-class ForDay extends StatefulWidget
-{
+class ForDay extends StatefulWidget {
   @override
   _ForDay createState() => _ForDay();
-
 }
 
-class _ForDay extends State<ForDay>
-{
+class _ForDay extends State<ForDay> {
   static const days = <String>[
     'Lunedì',
     'Martedì',
@@ -302,13 +282,13 @@ class _ForDay extends State<ForDay>
   ];
 
   final List<DropdownMenuItem<String>> _dropDownDaysItems = days
-    .map(
-      (String value) => DropdownMenuItem<String>(
-        value: value,
-        child: Text(value),
-      ),
-    )
-    .toList();
+      .map(
+        (String value) => DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        ),
+      )
+      .toList();
 
   String _selectedDay;
 
@@ -329,22 +309,17 @@ class _ForDay extends State<ForDay>
       ),
     );
   }
-  
 }
 
-Widget forVolatile()
-{
+Widget forVolatile() {
   return ForVolatile();
 }
 
-class ForVolatile extends StatefulWidget
-{
-
+class ForVolatile extends StatefulWidget {
   _ForVolatile createState() => _ForVolatile();
 }
 
-class _ForVolatile extends State<ForVolatile>
-{
+class _ForVolatile extends State<ForVolatile> {
   DateTime _dateSelected;
 
   @override
@@ -354,54 +329,50 @@ class _ForVolatile extends State<ForVolatile>
         icon: Icon(Icons.date_range),
         label: FontText('data di scadenza'),
         style: textButtonStyle(),
-        onPressed: ()=>{
-          getDateTime(context, 'seleziona la data dopo la quale la nota verrà cancellata').then((value) => {
-            setState(()=>{
-              volatile = value,
-              _dateSelected = value
-            })
-          })
+        onPressed: () => {
+          getDateTime(context,
+                  'seleziona la data dopo la quale la nota verrà cancellata')
+              .then((value) => {
+                    setState(() => {volatile = value, _dateSelected = value})
+                  })
         },
       ),
-      trailing: FontText(_dateSelected == null ? '' : _dateSelected.day.toString() + '/'+ _dateSelected.month.toString() + '/' + _dateSelected.year.toString()),
+      trailing: FontText(_dateSelected == null
+          ? ''
+          : _dateSelected.day.toString() +
+              '/' +
+              _dateSelected.month.toString() +
+              '/' +
+              _dateSelected.year.toString()),
     );
   }
 }
 
-Future<DateTime> getDateTime(BuildContext context, String info)
-{
+Future<DateTime> getDateTime(BuildContext context, String info) {
   final DateTime now = DateTime.now();
   final DateTime max = new DateTime(2040);
   return showDatePicker(
-    context: context, 
-    initialDate: now, 
-    firstDate: now, 
+    context: context,
+    initialDate: now,
+    firstDate: now,
     lastDate: max,
-    helpText: info,    
+    helpText: info,
   );
 }
 
-Widget forVolatilDay()
-{
-  return Column(children: [
-    forDay(),
-    forVolatile()
-  ]);
+Widget forVolatilDay() {
+  return Column(children: [forDay(), forVolatile()]);
 }
 
-Widget forEvent()
-{
+Widget forEvent() {
   return ForEvent();
 }
 
-class ForEvent extends StatefulWidget
-{
-
+class ForEvent extends StatefulWidget {
   _ForEvent createState() => _ForEvent();
 }
 
-class _ForEvent extends State<ForEvent>
-{
+class _ForEvent extends State<ForEvent> {
   DateTime _day;
 
   @override
@@ -411,17 +382,20 @@ class _ForEvent extends State<ForEvent>
         icon: Icon(Icons.date_range),
         label: FontText('data dell\'evento'),
         style: textButtonStyle(),
-        onPressed: ()=>{
-          getDateTime(context, 'seleziona la data dell\'evento').then((value) => {
-            setState(()=>{
-              event = value,
-              _day = value
-            })
-          })
+        onPressed: () => {
+          getDateTime(context, 'seleziona la data dell\'evento')
+              .then((value) => {
+                    setState(() => {event = value, _day = value})
+                  })
         },
       ),
-      trailing: FontText(_day == null ? '' : _day.day.toString() + '/'+ _day.month.toString() + '/' + _day.year.toString()),
+      trailing: FontText(_day == null
+          ? ''
+          : _day.day.toString() +
+              '/' +
+              _day.month.toString() +
+              '/' +
+              _day.year.toString()),
     );
   }
-  
 }

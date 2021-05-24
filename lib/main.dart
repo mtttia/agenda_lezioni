@@ -47,7 +47,6 @@ void start(File file)
 
 void startFormJson(String value)
 {
-  print(value);
   Status.initializeFromJson(value);
   runApp(App());
 }
