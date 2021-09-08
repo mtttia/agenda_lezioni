@@ -10,6 +10,7 @@ import 'pages/intro.dart';
 import 'utils/status.dart';
 import 'pages/setting/setting.dart';
 import 'pages/information.dart';
+import 'pages/newYear.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -66,6 +67,12 @@ class _Home
           Icon(Icons.info, color: PrimaryColor,),
           'Informazioni',
           () => {Navigator.of(context).push(InformationRoute())},
+          pop: false,
+        ),
+        DrawerItem(
+          Icon(Icons.backpack, color: PrimaryColor,),
+          'Nuovo anno',
+              () => {Navigator.of(context).push(NewYearRouter())},
           pop: false,
         ),
       ],
